@@ -728,9 +728,75 @@ git push -u origin main
 
 读完这份资料，我们据此修正了 6 处认知/代码，记在本节末尾：
 
-1. **两种 `search` 是两条路**：`new Xxx().search(...)` / `this.search(...)` 走 SDK 本地 `DbUtils`，**不进方法重写链、不做数据权限注入**；只有 `rs.call("search", ...)` / `rs.callSuper(X.class, "search", ...)` 才落到引擎 `BussModelDataAccess`。做数据隔离必须用后者。
+1. **两种 `search` 的入口不同，但都会进引擎**（这条是反编译核对后**修正厂商文档**的）：`BaseModel.search` 的实现是 `return DbUtils.search(...)`（`_extract\dec_sdk\...\BaseModel.java:284`），而 `DbUtils.search` 里是 `rs.callSuper(null, "search", new Object[]{filter, properties, limit, offset, order})`（`DbUtils.java:262-276`）。`callSuper(null, ...)` 从**重写链顶端**进入，所以数据权限注入、租户过滤、应用层的 `search` 重写都会照常执行——它并没有“绕过引擎”。
+   真正的坑在另一头：**在重写了 `search` 的模型内部调用 `this.search(...)` 会自递归**（从链顶再次进入自己），必须写 `rs.callSuper(本类.class, "search", ...)`。
 2. **seed 由应用市场 install/update 触发**，不是每次启动都导；改完 `data/*.json` 要让 app 走一次更新（或清库重装）才生效。
-3. **`@Property(unique = true)` 能直接做“编码唯一”**，不必手写 `validate`（第 8 节 BOM 的 `@Unique` 就是这么实现的）。
+3. **`@Validate.Unique(properties = {...})` 能直接做“编码唯一”**，不必手写 `validate`；`@Property(unique = true)` 只是建唯一索引，不会给你友好的错误提示。两者区别与实测见第 15 节。
 4. **`@Model(parent = ...)` 是 `String[]`**（多继承），我们写的 `parent = "order"` 是单元素数组，合法。
 5. **superuser 在授权源头短路**，连租户过滤一起跳过——只有它能无条件调通所有模型服务，生产环境必须改初始密码。
 6. **手写排查 SQL 前先读 `@Model`**：列名以 `@Property`/`@JoinColumn` 声明为准，且不要假设有 `delete_flag` 列（只有开了逻辑删除的表才有）。
+
+## 15. 实训任务收尾：BOM 编码唯一 + 数据隔离
+
+第三天课程里的四个实训任务，到本节全部落地：
+
+| 实训任务 | 实现位置 | 状态 |
+|---|---|---|
+| 产品 BOM 管理（`@Unique` 校验编码唯一） | `ProductBom.code` | ✅ 本节 15.1 |
+| 编码规则（`@Selection` 日期格式下拉） | `CodeRule` / `BarcodeRule` | ✅ 第 10、12 节 |
+| 数据隔离（`isAutoLog`、`create_user`） | `Material.searchMine` | ✅ 本节 15.2 |
+| 服务扩展（APP2 改 APP1 订单服务） | `OrderExt.create` | ✅ 第 12 节 |
+
+### 15.1 `@Validate.Unique` 做 BOM 编码唯一
+
+`sie-iidp-demo-apps\sie-snest-mes\src\main\java\com\sie\app\mes\model\ProductBom.java`：
+
+```java
+@Validate.Unique(properties = {"code"}, message = "BOM编码已存在，请更换一个")
+@Property(displayName = "BOM编码", displayForModel = true)
+private String code;
+```
+
+要点：
+- `properties` 可以写多个字段做**组合唯一**（例如 `{"product", "material"}` 表示同一产品同一物料只能有一条）；
+- 校验发生在引擎统一的 create/update 校验阶段，不用业务代码里手动调；
+- 更新自己时不会误报（引擎会排除当前记录）。
+
+实测（implementer，经 nginx）：
+
+```text
+第 1 次 create {"valuesList":[{"code":"BOM-UNIQ-001","amount":3}]}
+ → {"error":null,"result":{"data":["06ck14nlcf4cu"]}}
+第 2 次 create 同样的 code
+ → {"error":{"code":2000,"message":"BOM编码已存在，请更换一个"},"result":null}
+update 该记录（code 不变，只改 amount）
+ → {"error":null,"result":{"data":["06ck14nlcf4cu"]}}
+```
+
+### 15.2 数据隔离：`create_user` + 业务层过滤
+
+`Material` 新增服务（`@MethodService(name = "searchMine", auth = "searchMine")`）：
+
+```java
+String userId = rs.getMeta().getUserId();
+Filter mine = Filter.equal("create_user", userId);
+Filter merged = (filter == null) ? mine : mine.and(filter);   // and 会修改左侧对象
+return (List<Material>) rs.callSuper(Material.class, "search", merged, properties, limit, offset, order);
+```
+
+实测（admin 先建一条物料，再由 implementer 查询）：
+
+```text
+implementer material.search      → 3 条：M202611070001(管理员建的物料, rbac_user_admin)
+                                        M202610310003(编码规则测试物料A, rbac_user_implementer)
+                                        M2026103109430324700001(对齐后物料, rbac_user_implementer)
+implementer material.searchMine  → 2 条：只剩 rbac_user_implementer 自己的
+```
+
+`create_user` 由 `isAutoLog = Bool.True` 自动写入；`Material.create` 里那行 `item.setCreate_user(rs.getMeta().getUserId())` 是显式写法，两者不冲突。
+
+> 这是**业务层隔离**（服务里主动加条件），适合 demo。真正的行级/字段级隔离要配数据权限：作用域 SG + 角色 + 规则 + 维度，见 `docs/vendor/sie-snest-engine/reference/data-scope.md`。
+
+### 15.3 编码生成的并发问题
+
+`BarcodeRule.generateCode` 是「查明细 → 序号 +1 → 更新」三步，非原子。本次给它加了 `synchronized`（单实例够用）并在注释里写明：**多实例/集群必须改成数据库原子自增或行锁**，否则两个 pod 会取到同一个流水号。`CodeRuleGenerator.generate`（第 10 节）本来就是 `synchronized`，问题相同。

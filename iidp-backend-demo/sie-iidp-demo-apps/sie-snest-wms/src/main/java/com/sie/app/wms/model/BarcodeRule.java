@@ -49,8 +49,16 @@ public class BarcodeRule extends BaseModel<BarcodeRule> {
         set("length", length);
     }
 
+    /**
+     * 按编码规则生成下一个编码。
+     * <p>
+     * 并发说明：这里做了「查明细 → 序号 +1 → 更新」三步，非原子。单实例部署时用
+     * {@code synchronized} 串行化够用；多实例/集群部署必须换成数据库层的原子自增
+     * （例如 {@code UPDATE ... SET seq = seq + 1} 后回查，或对明细行加行锁），
+     * 否则两个 pod 同时取号会拿到同一个流水号。
+     */
     @MethodService(description = "按编码规则生成下一个编码")
-    public String generateCode(String code) {
+    public synchronized String generateCode(String code) {
         List<BarcodeRule> rules = search(Filter.equal("code", code),
                 Collections.singletonList("*"), 0, 0, null);
         if (rules == null || rules.isEmpty()) {
