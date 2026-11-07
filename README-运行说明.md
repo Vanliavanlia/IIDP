@@ -618,3 +618,96 @@ curl.exe -s -X POST "http://127.0.0.1:30666/api/root/rpc/service/?model=order&se
 1. **重启后端**（`stop-all.ps1` → `start-all.ps1`，或直接重启 backend 进程），模型/视图/菜单才会重新解析；
 2. **租户授权**：wms 应用已经整应用授权（`rbac_role_auth` 里 `appAll=1`），新增服务会自动纳入；如果是新建的应用，要去「租户管理 → 授权」里勾上新应用，否则菜单看不到、调用 403；
 3. **种子数据**：`wms-seed.json` 里给编码规则写了固定 `id`（`wms_barcode_rule_order` 等），重启不会重复插入；`app.json` 的 `data` 必须引用这个文件才会被加载。
+
+## 13. 版本管理（Git）与接口调试（Apifox）
+
+### 13.1 Git 仓库现状
+
+仓库根是**整个工作区** `D:\Code\intermediate_software`（不是只有后端），这样源码、脚本、说明文档一起版本化。
+
+```powershell
+cd D:\Code\intermediate_software
+git log --oneline                     # 提交历史
+git status                            # 工作区状态
+(git ls-files | Measure-Object -Line) # 已跟踪文件数（当前 91 个）
+```
+
+仓库里**不提交**的内容（见根目录 `.gitignore`）：
+
+| 排除项 | 原因 |
+|---|---|
+| `target/ build/ out/ *.class *.jar.original` | 构建产物，可重新生成 |
+| `logs/ *.log` | 运行日志 |
+| `.idea/ *.iml .vscode/` | IDE 个人配置 |
+| `/maven-repository/ /offline-repo/ /.m2repo/ /.m2repo_backup/` | 本地 Maven 仓库，几百 MB |
+| `/mysql-data/` | 本地 MySQL 数据文件 |
+| `/runtime/` | Redis/MinIO 运行数据、日志、dump.rdb |
+| `/iidp-frontend-dist/` | 前端静态产物 + Nginx + grant 可执行文件 |
+| `/_extract/` | 从 PDF/PPT 提取的临时素材 |
+| `/com/` | 平台调试期在根目录生成的目录 |
+| `/iidp-backend-demo/apps/modules/` | 平台内置 SDK jar（250MB） |
+
+> **踩坑提醒**：`.gitignore` 里的 `com/` 会匹配**任意层级**的 com 目录，把 `src/main/java/com/sie/...` 全忽略掉。必须写 `/com/`（前导斜杠 = 只在仓库根生效）。第一次提交就踩了这个坑，只暂存到 26 个文件。
+
+### 13.2 推送到 Gitee / GitHub
+
+**先在平台上建空仓库**（不要勾选"初始化 README"或"添加 .gitignore"，否则本地 push 会因历史不一致被拒；万一勾了，用 `git pull --rebase origin main --allow-unrelated-histories` 合并）。
+
+方式一：HTTPS（简单，密码用「私人令牌 / Personal Access Token」，不是登录密码）
+
+```powershell
+git remote add origin https://gitee.com/<你的用户名>/<仓库名>.git
+git push -u origin main
+```
+
+方式二：SSH（推荐，配一次以后免密）
+
+```powershell
+ssh-keygen -t rsa -C "你的邮箱"               # 一路回车，默认存 ~\.ssh\id_rsa
+Get-Content $env:USERPROFILE\.ssh\id_rsa.pub  # 复制输出，粘到 Gitee「设置 → SSH 公钥」
+ssh -T git@gitee.com                          # 出现 successfully authenticated 即成功
+git remote add origin git@gitee.com:<你的用户名>/<仓库名>.git
+git push -u origin main
+```
+
+> **22 端口被网络封掉时**（报 `ssh: connect to host ... port 22: Connection refused`），在 `C:\Users\<你>\.ssh\config` 里加：
+> ```
+> Host gitee.com
+>   HostName ssh.gitee.com
+>   Port 443
+> Host github.com
+>   HostName ssh.github.com
+>   Port 443
+> ```
+
+其他人克隆：`git clone <仓库地址>`，然后按第 3 节重建本地环境。
+
+### 13.3 用 Apifox 调试接口
+
+**为什么不能直接用 URL 导入**：平台自带的文档页 `http://localhost:30666/api/root/api/master` 是服务端渲染的 HTML（jquery + api-doc.js），不是 OpenAPI/Swagger JSON，`/v3/api-docs`、`/swagger-resources` 也都是 404，所以 Apifox 的"URL 导入"抓不到结构。
+
+为此本项目手写了一份 OpenAPI 3.0.3 描述文件：**`iidp-backend-demo\docs\openapi.json`**，包含登录、模型服务调用、文件上传、文件下载四个接口与 JSON-RPC 报文 schema。
+
+导入步骤：
+
+1. Apifox → 打开项目 → **导入数据 → OpenAPI / Swagger → 文件**，选 `D:\Code\intermediate_software\iidp-backend-demo\docs\openapi.json`；
+2. **环境管理**里新建环境，加两个变量：
+   - `baseUrl` = `http://localhost:30666/api`（经 Nginx，推荐）或 `http://localhost:8061`（直连）；
+   - `token` = 先留空；
+3. 调 **登录** `POST {{baseUrl}}/root/rpc/login`，body 用示例，`password` 传 **MD5 明文**：
+
+   | 账号 | MD5 |
+   |---|---|
+   | admin / admin | `21232f297a57a5a743894a0e4a801fc3` |
+   | implementer / Implementer_2023 | `059b7e90b851797c848e610a212cb915` |
+   | superuser / superuser | `0baea2f0ae20150db78f58cddac442a9` |
+   | admin_000001 / Admin_000001 | `e1a853c9c2b9960305b90c79a12f1b33` |
+
+   从响应 `result.data.token` 复制 token，粘到环境变量 `token`；
+4. 调业务接口 **`POST {{baseUrl}}/root/rpc/service/?model=material&service=search`**，需要**两个**鉴权头：
+   - `Authorization: Bearer {{token}}`
+   - `token: {{token}}`
+
+   query 的 `model`/`service` 换成要调的服务；body 用示例（查询物料 / 生成编码 / 扩展服务建订单 三选一）。
+
+> 常见错误对照：`7100 token不能为空` → 少了 `Authorization` 头；`token失效，请退出重新登录` → `Authorization` 少了 `Bearer ` 前缀；`403 无权访问：模型[x] 服务[y]` → 该角色未授权此应用，去「租户管理 → 授权」勾上；`2000 字典配置有误` → 字典数据缺失。

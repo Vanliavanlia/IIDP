@@ -1,0 +1,291 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "IIDP Demo API（MES / WMS）",
+    "description": "IIDP 平台的 JSON-RPC 风格接口。\n\n统一入口只有两个：\n1. `POST /root/rpc/login` —— 登录拿 token\n2. `POST /root/rpc/service/` —— 调用任意模型服务，用 query 参数 `model` + `service` 指定，body 里用 `params.app` 指定应用\n\n前端通过 Nginx 30666 访问时，路径前面要加 `/api` 前缀（Nginx 会把 `/api` 剥掉转发到后端 8061）。\n\n鉴权：业务接口需要同时带两个头\n- `Authorization: Bearer <token>`\n- `token: <token>`\n\n只带其中一个会返回 7100（token不能为空）或 token失效。",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:30666/api",
+      "description": "经 Nginx 访问（推荐，前端同源）"
+    },
+    {
+      "url": "http://localhost:8061",
+      "description": "直连后端"
+    }
+  ],
+  "tags": [
+    { "name": "认证", "description": "登录 / 用户信息" },
+    { "name": "模型服务", "description": "所有模型自带的增删改查 + @MethodService 自定义服务" },
+    { "name": "文件", "description": "基于 MinIO 的上传下载" }
+  ],
+  "paths": {
+    "/root/rpc/login": {
+      "post": {
+        "tags": ["认证"],
+        "summary": "登录",
+        "description": "password 传 **MD5(明文)**，不是数据库里的 sha256(md5+salt)。\n\n可用账号：admin/admin、implementer/Implementer_2023、superuser/superuser、admin_000001/Admin_000001。\n\n对应 MD5：\n- admin → 21232f297a57a5a743894a0e4a801fc3\n- Implementer_2023 → 059b7e90b851797c848e610a212cb915\n- superuser → 0baea2f0ae20150db78f58cddac442a9\n- Admin_000001 → e1a853c9c2b9960305b90c79a12f1b33",
+        "parameters": [
+          { "name": "model", "in": "query", "required": false, "schema": { "type": "string" }, "example": "" },
+          { "name": "service", "in": "query", "required": false, "schema": { "type": "string" }, "example": "" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/JsonRpcLoginRequest" },
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "login",
+                "id": "1",
+                "params": {
+                  "login": "implementer",
+                  "password": "059b7e90b851797c848e610a212cb915",
+                  "app": "sie-iidp-iam",
+                  "tag": "master",
+                  "context": { "lang": "zh_CN", "tenant": "root" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "登录结果，token 在 result.data.token",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/JsonRpcResponse" },
+                "example": {
+                  "error": null,
+                  "id": "1",
+                  "result": {
+                    "data": {
+                      "login": "implementer",
+                      "id": "rbac_user_implementer",
+                      "name": "平台租户管理员",
+                      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9....",
+                      "roles": [{ "code": "rbac_role_implementer_admin", "name": "平台租户管理员" }]
+                    }
+                  },
+                  "jsonrpc": "2.0"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/root/rpc/service/": {
+      "post": {
+        "tags": ["模型服务"],
+        "summary": "调用模型服务（增删改查 / 自定义服务）",
+        "description": "query 参数 `model` 是模型名（material、order、barcode_rule、warehouse、ui_menu…），`service` 是服务名（create/search/count/update/delete 或 @MethodService 声明的名字）。\n\nbody 里 `params.app` 决定走哪个 APP 的实现：`app=wms` 走 wms 的扩展（如 OrderExt.create），`app=mes` 走原始实现。\n\n常用示例：\n- 查询：`args = {\"limit\":10,\"offset\":0,\"properties\":[\"*\"],\"filter\":[{\"field\":\"name\",\"op\":\"like\",\"value\":\"%\"}]}`\n- 新建：`args = {\"valuesList\":[{\"name\":\"...\"}]}`\n\n注意：`filter` 传空对象 `{}` 会导致引擎 NPE，省略或传 `[]` 即可。",
+        "parameters": [
+          { "name": "model", "in": "query", "required": true, "schema": { "type": "string" }, "example": "material" },
+          { "name": "service", "in": "query", "required": true, "schema": { "type": "string" }, "example": "search" },
+          { "name": "Authorization", "in": "header", "required": true, "description": "Bearer <token>", "schema": { "type": "string" }, "example": "Bearer {{token}}" },
+          { "name": "token", "in": "header", "required": true, "description": "裸 token（不带 Bearer）", "schema": { "type": "string" }, "example": "{{token}}" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/JsonRpcServiceRequest" },
+              "examples": {
+                "查询物料": {
+                  "value": {
+                    "jsonrpc": "2.0",
+                    "method": "service",
+                    "id": "1",
+                    "params": {
+                      "args": { "limit": 10, "offset": 0, "properties": ["name", "code", "type"] },
+                      "app": "mes",
+                      "model": "material",
+                      "service": "search",
+                      "tag": "master",
+                      "context": { "lang": "zh_CN", "tenant": "root" }
+                    }
+                  }
+                },
+                "生成编码": {
+                  "value": {
+                    "jsonrpc": "2.0",
+                    "method": "service",
+                    "id": "1",
+                    "params": {
+                      "args": { "code": "order" },
+                      "app": "wms",
+                      "model": "barcode_rule",
+                      "service": "generateCode",
+                      "tag": "master",
+                      "context": { "lang": "zh_CN", "tenant": "root" }
+                    }
+                  }
+                },
+                "扩展服务建订单": {
+                  "value": {
+                    "jsonrpc": "2.0",
+                    "method": "service",
+                    "id": "1",
+                    "params": {
+                      "args": { "valuesList": [{ "quantity": 10, "status": "1" }] },
+                      "app": "wms",
+                      "model": "order",
+                      "service": "create",
+                      "tag": "master",
+                      "context": { "lang": "zh_CN", "tenant": "root" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "正常返回 result.data；业务异常时 error.code 非空（例如 403 无权访问、504 自定义异常、2000 字典校验失败）",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/JsonRpcResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/file/upload": {
+      "post": {
+        "tags": ["文件"],
+        "summary": "上传文件到 MinIO",
+        "parameters": [
+          { "name": "Authorization", "in": "header", "required": true, "schema": { "type": "string" }, "example": "Bearer {{token}}" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": { "file": { "type": "string", "format": "binary" } },
+                "required": ["file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "返回文件 id 与对象 key",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": null,
+                  "result": {
+                    "data": [{ "bucket": "apps", "key": "2026-10-30/832865974928694569.txt", "name": "test.txt", "size": 29, "id": "06bsqcix17o9x", "md5": "473087bd9e9ef136c25b9fcc00a5a668" }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/file/download": {
+      "get": {
+        "tags": ["文件"],
+        "summary": "按 id 下载文件",
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "Authorization", "in": "header", "required": true, "schema": { "type": "string" }, "example": "Bearer {{token}}" },
+          { "name": "token", "in": "header", "required": true, "schema": { "type": "string" }, "example": "{{token}}" }
+        ],
+        "responses": { "200": { "description": "文件二进制流" } }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer" }
+    },
+    "schemas": {
+      "JsonRpcLoginRequest": {
+        "type": "object",
+        "required": ["params"],
+        "properties": {
+          "jsonrpc": { "type": "string", "example": "2.0" },
+          "method": { "type": "string", "example": "login" },
+          "id": { "type": "string", "example": "1" },
+          "params": {
+            "type": "object",
+            "required": ["login", "password"],
+            "properties": {
+              "login": { "type": "string", "description": "登录名" },
+              "password": { "type": "string", "description": "MD5(明文密码) 的小写十六进制" },
+              "app": { "type": "string", "default": "sie-iidp-iam" },
+              "tag": { "type": "string", "default": "master" },
+              "context": {
+                "type": "object",
+                "properties": {
+                  "lang": { "type": "string", "default": "zh_CN" },
+                  "tenant": { "type": "string", "description": "租户 code，root 或 000001" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "JsonRpcServiceRequest": {
+        "type": "object",
+        "required": ["params"],
+        "properties": {
+          "jsonrpc": { "type": "string", "example": "2.0" },
+          "method": { "type": "string", "example": "service" },
+          "id": { "type": "string", "example": "1" },
+          "params": {
+            "type": "object",
+            "required": ["args", "app", "model", "service"],
+            "properties": {
+              "args": {
+                "type": "object",
+                "description": "服务入参。search: {limit,offset,properties,filter}；create: {valuesList:[{...}]}；自定义服务按方法签名传"
+              },
+              "app": { "type": "string", "description": "mes / wms / sie-iidp-iam …", "example": "mes" },
+              "model": { "type": "string", "example": "material" },
+              "service": { "type": "string", "example": "search" },
+              "tag": { "type": "string", "default": "master" },
+              "authId": { "type": "string", "description": "可选，权限位 auth_id" },
+              "context": {
+                "type": "object",
+                "properties": {
+                  "lang": { "type": "string", "default": "zh_CN" },
+                  "tenant": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "JsonRpcResponse": {
+        "type": "object",
+        "properties": {
+          "jsonrpc": { "type": "string" },
+          "id": { "type": "string" },
+          "result": {
+            "type": "object",
+            "properties": { "data": {} }
+          },
+          "error": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "code": { "type": "integer" },
+              "message": { "type": "string" },
+              "host": { "type": "string" },
+              "data": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}
