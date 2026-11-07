@@ -1,0 +1,190 @@
+{
+  "views": {
+    "supplier_grid": {
+      "body": {
+        "buttons": [
+          {
+            "action": "preview",
+            "auth": "read",
+            "name": "详情"
+          },
+          {
+            "action": "edit",
+            "auth": "update",
+            "name": "编辑"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "名称",
+            "name": "name"
+          },
+          {
+            "displayName": "联系方式",
+            "name": "phone",
+            "sortable": true,
+            "width": "80px"
+          },
+          {
+            "displayName": "地址",
+            "name": "address"
+          }
+        ],
+        "tbar": [
+          {
+            "action": "create",
+            "auth": "create",
+            "name": "新增"
+          },
+          {
+            "action": "delete",
+            "auth": "delete",
+            "name": "删除"
+          }
+        ],
+        "type": "grid"
+      },
+      "mode": "primary",
+      "model": "supplier",
+      "name": "供应商-表格",
+      "type": "grid"
+    },
+    "supplier_form": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "名称",
+            "name": "name"
+          },
+          {
+            "displayName": "联系方式",
+            "name": "phone"
+          },
+          {
+            "displayName": "地址",
+            "name": "address"
+          }
+        ],
+        "tabs": [
+          {
+            "body": {
+              "buttons": [
+                {
+                  "action": "updateEr",
+                  "auth": "update",
+                  "name": "编辑"
+                }
+              ],
+              "columns": [
+                {
+                  "displayName": "名称",
+                  "name": "name"
+                },
+                {
+                  "displayName": "编码",
+                  "name": "code"
+                },
+                {
+                  "displayName": "类型",
+                  "name": "type"
+                },
+                {
+                  "displayName": "单位",
+                  "name": "unit"
+                },
+                {
+                  "displayName": "描述",
+                  "name": "description"
+                },
+                {
+                  "displayName": "库存量",
+                  "name": "stockQuantity"
+                },
+                {
+                  "displayName": "单价",
+                  "name": "price"
+                }
+              ],
+              "edit": {
+                "columns": [
+                  {
+                    "displayName": "名称",
+                    "name": "name"
+                  },
+                  {
+                    "displayName": "编码",
+                    "name": "code"
+                  },
+                  {
+                    "displayName": "类型",
+                    "name": "type"
+                  },
+                  {
+                    "displayName": "单位",
+                    "name": "unit"
+                  },
+                  {
+                    "displayName": "描述",
+                    "name": "description"
+                  },
+                  {
+                    "displayName": "库存量",
+                    "name": "stockQuantity"
+                  },
+                  {
+                    "displayName": "单价",
+                    "name": "price"
+                  }
+                ],
+                "type": "form"
+              },
+              "field": "materialList",
+              "type": "grid,form"
+            },
+            "header": "物料",
+            "tbar": [
+              {
+                "action": "createEr",
+                "auth": "create",
+                "name": "创建"
+              },
+              {
+                "action": "deleteEr",
+                "auth": "delete",
+                "name": "删除"
+              }
+            ]
+          }
+        ],
+        "type": "form"
+      },
+      "mode": "primary",
+      "model": "supplier",
+      "name": "供应商-表单",
+      "type": "form"
+    },
+    "supplier_search": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "名称",
+            "name": "name"
+          },
+          {
+            "displayName": "联系方式",
+            "name": "phone"
+          },
+          {
+            "displayName": "地址",
+            "name": "address"
+          }
+        ],
+        "type": "search"
+      },
+      "mode": "primary",
+      "model": "supplier",
+      "name": "供应商-搜索",
+      "type": "search"
+    }
+  }
+}

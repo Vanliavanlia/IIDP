@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>iidp-backend-demo</artifactId>
+        <groupId>com.sie.iidp</groupId>
+        <version>${revision}</version>
+    </parent>
+    <description>iidp-demo启动端</description>
+    <artifactId>sie-iidp-demo-start</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!--   引擎     -->
+        <dependency>
+            <groupId>com.sie.meta</groupId>
+            <artifactId>sie-snest-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.7.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version> <!-- 使用最新稳定版本 -->
+                <executions>
+                    <execution>
+                        <id>copy-apps-dependencies</id>
+                        <phase>package</phase> <!-- 选择你想执行此操作的构建阶段 -->
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <!--                            "sie-iidp-user-prefer-v2.9.0-UAT.004.jar",-->
+                            <!--                            "sie-iidp-iam-v2.9.1-TEST.011.jar",-->
+                            <!--                            "sie-iidp-tenant-v2.9.1-TEST.018.jar"-->
+                            <!-- 以下配置将复制指定的多个依赖 -->
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.sie.meta</groupId>
+                                    <artifactId>sie-iidp-config</artifactId>
+                                    <version>v3.0.1-UAT.001</version>
+                                    <type>jar</type>
+                                </artifactItem>
+
+                                <!--  应用市场         -->
+                                <artifactItem>
+                                    <groupId>com.sie.meta</groupId>
+                                    <artifactId>sie-iidp-app-store-app</artifactId>
+                                    <version>v3.0.1-UAT.001</version>
+                                    <type>jar</type>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>com.sie.meta</groupId>
+                                    <artifactId>sie-iidp-cache</artifactId>
+                                    <version>v3.0.1-RELEASE</version>
+                                    <type>jar</type>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>com.sie.meta</groupId>
+                                    <artifactId>sie-iidp-dict</artifactId>
+                                    <version>v3.0.2-UAT.001</version>
+                                    <type>jar</type>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>com.sie.meta</groupId>
+                                    <artifactId>sie-iidp-file</artifactId>
+                                    <version>v3.0.1-RELEASE</version>
+                                    <type>jar</type>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>com.sie.meta</groupId>
+                                    <artifactId>sie-iidp-log</artifactId>
+                                    <version>v3.0.1-RELEASE</version>
+                                    <type>jar</type>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>com.sie.meta</groupId>
+                                    <artifactId>sie-iidp-tenant</artifactId>
+                                    <version>v3.0.1-RELEASE</version>
+                                    <type>jar</type>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>com.sie.meta</groupId>
+                                    <artifactId>sie-iidp-user-prefer</artifactId>
+                                    <version>v3.0.0-RELEASE</version>
+                                    <type>jar</type>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>com.sie.meta</groupId>
+                                    <artifactId>sie-iidp-iam</artifactId>
+                                    <version>v3.0.1-HOTFIX.001</version>
+                                    <type>jar</type>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>com.sie.meta</groupId>
+                                    <artifactId>sie-iidp-dev-center</artifactId>
+                                    <version>v3.0.0-RELEASE</version>
+                                    <type>jar</type>
+                                </artifactItem>
+
+                                <!-- 国际化：提供界面多语言文案 -->
+                                <artifactItem>
+                                    <groupId>com.sie.meta</groupId>
+                                    <artifactId>sie-iidp-i18n</artifactId>
+                                    <version>v3.0.0-RELEASE</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <!-- 可选：是否覆盖已存在的文件 -->
+                            <!--                            <overWriteReleases>false</overWriteReleases>-->
+                            <!--                            <overWriteSnapshots>false</overWriteSnapshots>-->
+                            <!--                            <overWriteIfNewer>true</overWriteIfNewer>-->
+                            <!-- 指定输出目录 -->
+                            <outputDirectory>${basedir}/../apps/modules</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,43 @@
+{
+  "menus": {
+    "wms_root_menu": {
+      "name": "wms_root_menu",
+      "display_name": "仓储管理系统",
+      "active": true,
+      "sequence": 2
+    },
+    "warehouse_menu": {
+      "name": "warehouse_menu",
+      "display_name": "仓库管理",
+      "model": "warehouse",
+      "view": "warehouse_search,warehouse_grid,warehouse_form",
+      "sequence": 1,
+      "active": true,
+      "parent_ids": {
+        "@ref": "wms_root_menu"
+      }
+    },
+    "location_menu": {
+      "name": "location_menu",
+      "display_name": "库位管理",
+      "model": "location",
+      "view": "location_search,location_grid,location_form",
+      "sequence": 2,
+      "active": true,
+      "parent_ids": {
+        "@ref": "wms_root_menu"
+      }
+    },
+    "barcode_rule_menu": {
+      "name": "barcode_rule_menu",
+      "display_name": "编码规则",
+      "model": "barcode_rule",
+      "view": "barcode_rule_search,barcode_rule_grid,barcode_rule_form",
+      "sequence": 3,
+      "active": true,
+      "parent_ids": {
+        "@ref": "wms_root_menu"
+      }
+    }
+  }
+}

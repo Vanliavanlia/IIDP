@@ -1,0 +1,215 @@
+{
+  "views": {
+    "device_grid": {
+      "body": {
+        "buttons": [
+          {
+            "action": "preview",
+            "auth": "read",
+            "name": "详情"
+          },
+          {
+            "action": "edit",
+            "auth": "update",
+            "name": "编辑"
+          },
+          {
+            "auth": "check",
+            "name": "检查设备状态",
+            "model": "device",
+            "service": "check"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "购买日期",
+            "name": "purchaseDate"
+          },
+          {
+            "displayName": "设备名称",
+            "name": "name",
+            "width": "80px",
+            "sortable": true
+          },
+          {
+            "displayName": "设备编号",
+            "name": "code"
+          },
+          {
+            "displayName": "区域",
+            "name": "area"
+          },
+          {
+            "displayName": "设备状态",
+            "name": "status"
+          }
+        ],
+        "tbar": [
+          {
+            "action": "create",
+            "auth": "create",
+            "name": "新增"
+          },
+          {
+            "action": "delete",
+            "auth": "delete",
+            "name": "删除"
+          }
+        ],
+        "type": "grid"
+      },
+      "mode": "primary",
+      "model": "device",
+      "name": "设备-表格",
+      "type": "grid"
+    },
+    "device_form": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "设备名称",
+            "name": "name"
+          },
+          {
+            "displayName": "设备编号",
+            "name": "code"
+          },
+          {
+            "displayName": "设备状态",
+            "name": "status"
+          },
+          {
+            "displayName": "区域",
+            "name": "area"
+          },
+          {
+            "displayName": "购买日期",
+            "name": "purchaseDate"
+          }
+        ],
+        "tabs": [],
+        "type": "form"
+      },
+      "mode": "primary",
+      "model": "device",
+      "name": "设备-表单",
+      "type": "form"
+    },
+    "device_search": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "设备名称",
+            "name": "name"
+          },
+          {
+            "displayName": "设备编号",
+            "name": "code"
+          },
+          {
+            "displayName": "设备状态",
+            "name": "status"
+          },
+          {
+            "displayName": "区域",
+            "name": "area"
+          },
+          {
+            "displayName": "购买日期",
+            "name": "purchaseDate"
+          }
+        ],
+        "type": "search"
+      },
+      "mode": "primary",
+      "model": "device",
+      "name": "设备-搜索",
+      "type": "search"
+    },
+    "area_grid": {
+      "body": {
+        "buttons": [
+          {
+            "action": "edit",
+            "auth": "update",
+            "name": "编辑"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "区域名称",
+            "name": "name"
+          },
+          {
+            "displayName": "区域编码",
+            "name": "code"
+          },
+          {
+            "displayName": "描述",
+            "name": "description"
+          }
+        ],
+        "tbar": [
+          {
+            "action": "create",
+            "auth": "create",
+            "name": "新增"
+          },
+          {
+            "action": "delete",
+            "auth": "delete",
+            "name": "删除"
+          }
+        ],
+        "type": "grid"
+      },
+      "mode": "primary",
+      "model": "area",
+      "name": "区域-表格",
+      "type": "grid"
+    },
+    "area_form": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "区域名称",
+            "name": "name"
+          },
+          {
+            "displayName": "区域编码",
+            "name": "code"
+          },
+          {
+            "displayName": "描述",
+            "name": "description"
+          }
+        ],
+        "tabs": [],
+        "type": "form"
+      },
+      "mode": "primary",
+      "model": "area",
+      "name": "区域-表单",
+      "type": "form"
+    },
+    "area_search": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "区域名称",
+            "name": "name"
+          },
+          {
+            "displayName": "区域编码",
+            "name": "code"
+          }
+        ],
+        "type": "search"
+      },
+      "mode": "primary",
+      "model": "area",
+      "name": "区域-搜索",
+      "type": "search"
+    }
+  }
+}

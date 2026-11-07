@@ -1,0 +1,101 @@
+{
+  "views": {
+    "location_grid": {
+      "body": {
+        "buttons": [
+          {
+            "action": "edit",
+            "auth": "update",
+            "name": "编辑"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "库位名称",
+            "name": "name"
+          },
+          {
+            "displayName": "库位编码",
+            "name": "code"
+          },
+          {
+            "displayName": "所属仓库",
+            "name": "warehouse"
+          },
+          {
+            "displayName": "描述",
+            "name": "description"
+          }
+        ],
+        "tbar": [
+          {
+            "action": "create",
+            "auth": "create",
+            "name": "新增"
+          },
+          {
+            "action": "delete",
+            "auth": "delete",
+            "name": "删除"
+          }
+        ],
+        "type": "grid"
+      },
+      "mode": "primary",
+      "model": "location",
+      "name": "库位-表格",
+      "type": "grid"
+    },
+    "location_form": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "库位名称",
+            "name": "name"
+          },
+          {
+            "displayName": "库位编码",
+            "name": "code"
+          },
+          {
+            "displayName": "所属仓库",
+            "name": "warehouse"
+          },
+          {
+            "displayName": "描述",
+            "name": "description"
+          }
+        ],
+        "tabs": [],
+        "type": "form"
+      },
+      "mode": "primary",
+      "model": "location",
+      "name": "库位-表单",
+      "type": "form"
+    },
+    "location_search": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "库位名称",
+            "name": "name"
+          },
+          {
+            "displayName": "库位编码",
+            "name": "code"
+          },
+          {
+            "displayName": "所属仓库",
+            "name": "warehouse"
+          }
+        ],
+        "type": "search"
+      },
+      "mode": "primary",
+      "model": "location",
+      "name": "库位-搜索",
+      "type": "search"
+    }
+  }
+}

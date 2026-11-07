@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>iidp-backend-demo</artifactId>
+    <groupId>com.sie.iidp</groupId>
+    <packaging>pom</packaging>
+    <version>${revision}</version>
+
+    <modules>
+        <module>sie-iidp-demo-apps</module>
+        <module>sie-iidp-demo-start</module>
+        <module>sie-iidp-demo-common</module>
+    </modules>
+
+    <properties>
+        <engine.version>v3.0.1-HOTFIX.002</engine.version>
+        <sdk.version>v3.0.1-UAT.003</sdk.version>
+        <sie-iidp-plugin.version>0.3.1</sie-iidp-plugin.version>
+        <revision>1.0-SNAPSHOT</revision>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <org.springframework.boot.version>2.6.2</org.springframework.boot.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <jackson-core.version>2.13.0</jackson-core.version>
+        <jackson-databind.version>2.13.0</jackson-databind.version>
+        <hutool.version>5.8.11</hutool.version>
+        <guava.version>31.0.1-jre</guava.version>
+        <amqp-client.version>5.16.0</amqp-client.version>
+        <easyexcel.version>3.1.5</easyexcel.version>
+        <spring-boot.version>2.7.13</spring-boot.version>
+        <spring-boot-maven-plugin.version>2.7.2</spring-boot-maven-plugin.version>
+        <forest-core.version>1.5.33</forest-core.version>
+        <xxl-job-core.version>2.3.1</xxl-job-core.version>
+
+        <sie-snest-base.version>v2.8.1-RELEASE</sie-snest-base.version>
+        <sie-snest-file.version>v2.7.4-RELEASE</sie-snest-file.version>
+        <sie-snest-dict.version>v2.8.1-RELEASE</sie-snest-dict.version>
+        <sie-snest-cache.version>v2.8.1-RELEASE</sie-snest-cache.version>
+        <sie-snest-datasource.version>v2.8.1-RELEASE</sie-snest-datasource.version>
+        <sie-snest-mail.version>v2.7.0-RELEASE</sie-snest-mail.version>
+        <sie-snest-config.version>v2.2.0-RELEASE</sie-snest-config.version>
+        <sie-snest-log.version>v2.8.0-RELEASE</sie-snest-log.version>
+
+        <sie-snest-user-prefer.version>v2.8.0-RELEASE</sie-snest-user-prefer.version>
+        <sie-snest-tenant.version>v2.8.1-HOTFIX.001</sie-snest-tenant.version>
+        <sie-snest-i18n.version>v2.8.1-RELEASE</sie-snest-i18n.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.sie.iidp</groupId>
+                <artifactId>sie-iidp-demo-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sie.iidp</groupId>
+                <artifactId>sie-iidp-demo-example</artifactId>
+                <version>${project.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <!--   引擎     -->
+            <dependency>
+                <groupId>com.sie.meta</groupId>
+                <artifactId>sie-snest-sdk</artifactId>
+                <version>${sdk.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.sie.meta</groupId>
+                        <artifactId>sie-snest-engine</artifactId>
+                    </exclusion>
+                </exclusions>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.sie.meta</groupId>
+                <artifactId>sie-snest-engine</artifactId>
+                <version>${engine.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.webjars.bower</groupId>
+                        <artifactId>jquery-i18n-properties</artifactId>
+                    </exclusion>
+                </exclusions>
+                <scope>compile</scope>
+            </dependency>
+            <!--   脚本引擎（可选）     -->
+            <dependency>
+                <groupId>com.sie.meta</groupId>
+                <artifactId>sie-snest-script-engine</artifactId>
+                <version>${engine.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sie.meta</groupId>
+                <artifactId>sie-iidp-plugin</artifactId>
+                <version>${sie-iidp-plugin.version}</version>
+            </dependency>
+
+
+            <!--   springboot     -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
+            <!--XXLJOB 依赖 -->
+            <dependency>
+                <groupId>com.xuxueli</groupId>
+                <artifactId>xxl-job-core</artifactId>
+                <version>${xxl-job-core.version}</version>
+            </dependency>
+
+            <!--rabbitMQ 依赖 -->
+            <dependency>
+                <groupId>com.rabbitmq</groupId>
+                <artifactId>amqp-client</artifactId>
+                <version>${amqp-client.version}</version>
+            </dependency>
+
+            <dependency>
+                <!-- Import dependency management from Spring Boot -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${org.springframework.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot-maven-plugin.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
+                <!--                <exclusions>-->
+                <!--                    <exclusion>-->
+                <!--                        <groupId>org.apache.poi</groupId>-->
+                <!--                        <artifactId>poi-ooxml-schemas</artifactId>-->
+                <!--                    </exclusion>-->
+                <!--                </exclusions>-->
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel-core</artifactId>
+                <version>${easyexcel.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson-databind.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.dtflys.forest</groupId>
+                <artifactId>forest-core</artifactId>
+                <version>${forest-core.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.5.0</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>deploymentRepoReleases</id>
+            <url>http://192.168.168.156:8081/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>deploymentRepoSnapshots</id>
+            <url>http://192.168.168.156:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

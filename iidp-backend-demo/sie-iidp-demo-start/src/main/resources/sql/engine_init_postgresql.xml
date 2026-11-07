@@ -1,0 +1,484 @@
+<xml>
+    <insert id="createMetaApp" dbType="postgresql">
+        create table if not exists meta_app
+        (
+        id                 varchar(64)    not null primary key,
+        name               varchar(240)   null,
+        tag                varchar(240)   null,
+        display_name       varchar(240)   null,
+        version            varchar(240)   null,
+        url                text           null,
+        description        varchar(240)   null,
+        summary            varchar(1024)  null,
+        author             varchar(240)   null,
+        company            varchar(240)   null,
+        product            varchar(80)    null,
+        weight             numeric(11, 3) null,
+        sequence           numeric(22, 3) null,
+        icon               varchar(240)   null,
+        latest_version     varchar(240)   null,
+        application        char           null,
+        license            varchar(240)   null,
+        meta_app_store_id  varchar(255)   null,
+        jar_file_id        varchar(200)   null,
+        jar_file           varchar(240)   null,
+        md5                varchar(64)    null,
+        view_file_id       varchar(200)   null,
+        view_file          varchar(240)   null,
+        type               varchar(80)    null,
+        state              varchar(80)    null,
+        source             varchar(80)    null,
+        loader_type        varchar(80)    null,
+        kind               varchar(80)    null,
+        is_delete          char           null,
+        is_primary         char           null,
+        global             char           null,
+        reinstall          char           null,
+        view_file_frontend text           null,
+        front_tag          varchar(240)   null,
+        front_version      varchar(240)   null,
+        front_author       varchar(240)   null,
+        category_ids       varchar(64)    null,
+        tenant_id          varchar(64)    null,
+        create_user        varchar(64)    null,
+        create_date        timestamp      null,
+        update_user        varchar(64)    null,
+        update_date        timestamp      null
+        );
+        comment on table meta_app is '已安装应用';
+        comment on column meta_app.name is '应用';
+        comment on column meta_app.tag is '标签';
+        comment on column meta_app.display_name is '显示名称';
+        comment on column meta_app.version is '版本';
+        comment on column meta_app.url is '应用资源路径';
+        comment on column meta_app.description is '说明';
+        comment on column meta_app.summary is '摘要';
+        comment on column meta_app.author is '作者';
+        comment on column meta_app.company is '公司';
+        comment on column meta_app.product is '产品线';
+        comment on column meta_app.weight is '权重';
+        comment on column meta_app.sequence is '排序号';
+        comment on column meta_app.icon is '图标';
+        comment on column meta_app.latest_version is '最新版本';
+        comment on column meta_app.application is '是否应用';
+        comment on column meta_app.license is '授权';
+        comment on column meta_app.meta_app_store_id is '应用市场Id';
+        comment on column meta_app.jar_file_id is '应用jar包';
+        comment on column meta_app.jar_file is '应用jar包';
+        comment on column meta_app.md5 is 'md5';
+        comment on column meta_app.view_file_id is '前端压缩包';
+        comment on column meta_app.view_file is '前端压缩包';
+        comment on column meta_app.type is '类型';
+        comment on column meta_app.state is '安装状态';
+        comment on column meta_app.source is '来源';
+        comment on column meta_app.loader_type is '应用加载类型';
+        comment on column meta_app.kind is '服务状态';
+        comment on column meta_app.is_delete is '删除';
+        comment on column meta_app.is_primary is '是否主应用';
+        comment on column meta_app.global is '全局安装';
+        comment on column meta_app.reinstall is '可重复安装';
+        comment on column meta_app.view_file_frontend is '前端压缩包';
+        comment on column meta_app.front_tag is '前端包tag';
+        comment on column meta_app.front_version is '前端包版本';
+        comment on column meta_app.front_author is '前端包作者';
+        comment on column meta_app.category_ids is '分类';
+        comment on column meta_app.tenant_id is '租户ID';
+        comment on column meta_app.create_user is '创建人';
+        comment on column meta_app.create_date is '创建时间';
+        comment on column meta_app.update_user is '更新人';
+        comment on column meta_app.update_date is '更新时间';
+    </insert>
+
+    <insert id="createMetaAppStore" dbType="postgresql">
+        create table if not exists meta_app_store
+        (
+        id                 varchar(64)    not null primary key,
+        name               varchar(240)   null,
+        tag                varchar(240)   null,
+        display_name       varchar(240)   null,
+        version            varchar(240)   null,
+        latest_version     varchar(240)   null,
+        description        text           null,
+        summary            varchar(1024)  null,
+        author             varchar(240)   null,
+        company            varchar(240)   null,
+        product            varchar(80)    null,
+        weight             numeric(22, 3) null,
+        sequence           numeric(22, 3) null,
+        url                text           null,
+        icon               varchar(240)   null,
+        application        char           null,
+        license            varchar(240)   null,
+        jar_file_id        varchar(200)   null,
+        md5                varchar(64)    null,
+        view_file_id       varchar(200)   null,
+        source             varchar(80)    null,
+        app_market         varchar(80)    null,
+        type               varchar(80)    null,
+        loader_type        varchar(80)    null,
+        is_delete          char           null,
+        reinstall          char           null,
+        global             char           null,
+        kind               varchar(80)    null,
+        view_file_frontend text           null,
+        front_tag          varchar(240)   null,
+        front_version      varchar(240)   null,
+        front_author       varchar(240)   null,
+        view_file          varchar(240)   null,
+        category_ids       varchar(64)    null,
+        tenant_id          varchar(64)    null,
+        create_user        varchar(64)    null,
+        create_date        timestamp      null,
+        update_user        varchar(64)    null,
+        update_date        timestamp      null
+        );
+        comment on table meta_app_store is '应用市场';
+        comment on column meta_app_store.name is '应用';
+        comment on column meta_app_store.tag is '标签';
+        comment on column meta_app_store.display_name is '名称';
+        comment on column meta_app_store.version is '版本';
+        comment on column meta_app_store.latest_version is '最新版本';
+        comment on column meta_app_store.description is '详情';
+        comment on column meta_app_store.summary is '摘要';
+        comment on column meta_app_store.author is '作者';
+        comment on column meta_app_store.company is '公司';
+        comment on column meta_app_store.product is '产品线';
+        comment on column meta_app_store.weight is '权重';
+        comment on column meta_app_store.sequence is '排序号';
+        comment on column meta_app_store.url is '应用资源路径';
+        comment on column meta_app_store.icon is '图标';
+        comment on column meta_app_store.application is '是否应用';
+        comment on column meta_app_store.license is '授权';
+        comment on column meta_app_store.jar_file_id is '应用jar包';
+        comment on column meta_app_store.md5 is 'md5';
+        comment on column meta_app_store.view_file_id is '前端压缩包';
+        comment on column meta_app_store.source is '来源';
+        comment on column meta_app_store.app_market is '是否上架';
+        comment on column meta_app_store.type is '类型';
+        comment on column meta_app_store.loader_type is '应用加载类型';
+        comment on column meta_app_store.is_delete is '软删除';
+        comment on column meta_app_store.reinstall is '可重复安装';
+        comment on column meta_app_store.global is '全局安装';
+        comment on column meta_app_store.kind is '服务状态';
+        comment on column meta_app_store.view_file_frontend is '前端压缩包';
+        comment on column meta_app_store.front_tag is '前端包tag';
+        comment on column meta_app_store.front_version is '前端包版本';
+        comment on column meta_app_store.front_author is '前端包作者';
+        comment on column meta_app_store.view_file is '前端压缩包';
+        comment on column meta_app_store.category_ids is '分类';
+        comment on column meta_app_store.tenant_id is '租户ID';
+        comment on column meta_app_store.create_user is '创建人';
+        comment on column meta_app_store.create_date is '创建时间';
+        comment on column meta_app_store.update_user is '更新人';
+        comment on column meta_app_store.update_date is '更新时间';
+    </insert>
+
+    <insert id="createMetaAppCategory" dbType="postgresql">
+        create table if not exists meta_app_category
+        (
+        id          varchar(64)  not null primary key,
+        name        varchar(240) null,
+        description varchar(240) null,
+        tenant_id   varchar(64)  null,
+        create_user varchar(64)  null,
+        create_date timestamp    null,
+        update_user varchar(64)  null,
+        update_date timestamp    null
+        );
+        comment on table meta_app_category is 'meta_app_category';
+        comment on column meta_app_category.name is '分类名称';
+        comment on column meta_app_category.description is '显示名称';
+        comment on column meta_app_category.tenant_id is '租户ID';
+        comment on column meta_app_category.create_user is '创建人';
+        comment on column meta_app_category.create_date is '创建时间';
+        comment on column meta_app_category.update_user is '更新人';
+        comment on column meta_app_category.update_date is '更新时间';
+    </insert>
+
+    <insert id="createMetaAttachment" dbType="postgresql">
+        create table if not exists meta_attachment
+        (
+        id           varchar(64)  not null primary key,
+        name         varchar(512) null,
+        size         int          null,
+        md5          varchar(64)  null,
+        content_type varchar(240) null,
+        bucket       varchar(128) null,
+        "key"        varchar(128) null,
+        download_url varchar(512) null,
+        preview_url  varchar(512) null,
+        model_id     varchar(240) null,
+        description  varchar(512) null,
+        is_delete    char         null,
+        app_id       varchar(64)  null,
+        tenant_id    varchar(64)  null,
+        create_user  varchar(64)  null,
+        create_date  timestamp    null,
+        update_user  varchar(64)  null,
+        update_date  timestamp    null
+        );
+        comment on table meta_attachment is '附件';
+        comment on column meta_attachment.name is '文件名称';
+        comment on column meta_attachment.size is '文件大小';
+        comment on column meta_attachment.md5 is 'md5';
+        comment on column meta_attachment.content_type is '文件类型';
+        comment on column meta_attachment.bucket is 'bucket名称';
+        comment on column meta_attachment."key" is '文件访问名称';
+        comment on column meta_attachment.download_url is '下载地址';
+        comment on column meta_attachment.preview_url is '预览地址';
+        comment on column meta_attachment.model_id is '模型';
+        comment on column meta_attachment.description is '附件简介';
+        comment on column meta_attachment.is_delete is '是否删除';
+        comment on column meta_attachment.app_id is '应用';
+        comment on column meta_attachment.tenant_id is '租户ID';
+        comment on column meta_attachment.create_user is '创建人';
+        comment on column meta_attachment.create_date is '创建时间';
+        comment on column meta_attachment.update_user is '更新人';
+        comment on column meta_attachment.update_date is '更新时间';
+    </insert>
+
+    <insert id="createMetaAppDependency" dbType="postgresql">
+        create table if not exists meta_app_dependency
+        (
+        id        varchar(64)  not null primary key,
+        name      varchar(240) null,
+        is_delete char         null,
+        app_ids   varchar(64)  null,
+        tenant_id varchar(64)  null
+        );
+        comment on table meta_app_dependency is '应用依赖';
+        comment on column meta_app_dependency.name is '名称';
+        comment on column meta_app_dependency.is_delete is '软删除';
+        comment on column meta_app_dependency.app_ids is '应用';
+        comment on column meta_app_dependency.tenant_id is '租户ID';
+    </insert>
+
+    <insert id="createMetaAppStoreDependency" dbType="postgresql">
+        create table if not exists meta_app_store_dependency
+        (
+        id                varchar(64)  not null primary key,
+        name              varchar(240) null,
+        tag               varchar(240) null,
+        display_name      varchar(240) null,
+        version           varchar(240) null,
+        is_delete         char         null,
+        meta_app_store_id varchar(64)  null,
+        tenant_id         varchar(64)  null
+        );
+        comment on table meta_app_store_dependency is '应用依赖';
+        comment on column meta_app_store_dependency.name is '应用';
+        comment on column meta_app_store_dependency.tag is '标签';
+        comment on column meta_app_store_dependency.display_name is '名称';
+        comment on column meta_app_store_dependency.version is '版本';
+        comment on column meta_app_store_dependency.is_delete is '软删除';
+        comment on column meta_app_store_dependency.meta_app_store_id is '应用Id';
+        comment on column meta_app_store_dependency.tenant_id is '租户ID';
+    </insert>
+
+    <insert id="createMetaModelChange" dbType="postgresql">
+        create table if not exists meta_model_change
+        (
+        id          varchar(64)  not null primary key,
+        app         varchar(240) null,
+        tag         varchar(240) null,
+        type        varchar(240) null,
+        meta_id     varchar(240) null,
+        json        text         null,
+        source_app  varchar(240) null,
+        delete_flag char         null,
+        tenant_id   varchar(64)  null,
+        create_user varchar(64)  null,
+        create_date timestamp    null,
+        update_user varchar(64)  null,
+        update_date timestamp    null
+        );
+        comment on table meta_model_change is 'meta_model_change';
+        comment on column meta_model_change.app is 'app';
+        comment on column meta_model_change.tag is 'tag';
+        comment on column meta_model_change.type is 'type';
+        comment on column meta_model_change.meta_id is 'metaId';
+        comment on column meta_model_change.json is 'json';
+        comment on column meta_model_change.source_app is 'sourceApp';
+        comment on column meta_model_change.delete_flag is 'deleteFlag';
+        comment on column meta_model_change.tenant_id is '租户ID';
+        comment on column meta_model_change.create_user is '创建人';
+        comment on column meta_model_change.create_date is '创建时间';
+        comment on column meta_model_change.update_user is '更新人';
+        comment on column meta_model_change.update_date is '更新时间';
+    </insert>
+
+    <insert id="createMetaModelChangeLog" dbType="postgresql">
+        create table if not exists meta_model_change_log
+        (
+        id          varchar(64)  not null primary key,
+        app         varchar(240) null,
+        tag         varchar(240) null,
+        type        varchar(240) null,
+        meta_id     varchar(240) null,
+        json        text         null,
+        source_app  varchar(240) null,
+        delete_flag char         null,
+        tenant_id   varchar(64)  null,
+        create_user varchar(64)  null,
+        create_date timestamp    null,
+        update_user varchar(64)  null,
+        update_date timestamp    null
+        );
+        comment on table meta_model_change_log is 'meta_model_change_log';
+        comment on column meta_model_change_log.app is 'app';
+        comment on column meta_model_change_log.tag is 'tag';
+        comment on column meta_model_change_log.type is 'type';
+        comment on column meta_model_change_log.meta_id is 'metaId';
+        comment on column meta_model_change_log.json is 'json';
+        comment on column meta_model_change_log.source_app is 'sourceApp';
+        comment on column meta_model_change_log.delete_flag is 'deleteFlag';
+        comment on column meta_model_change_log.tenant_id is '租户ID';
+        comment on column meta_model_change_log.create_user is '创建人';
+        comment on column meta_model_change_log.create_date is '创建时间';
+        comment on column meta_model_change_log.update_user is '更新人';
+        comment on column meta_model_change_log.update_date is '更新时间';
+    </insert>
+
+    <insert id="createMetaModelData" dbType="postgresql">
+        create table if not exists meta_model_data
+        (
+        id             varchar(64)  not null primary key,
+        name           varchar(240) null,
+        model          varchar(240) null,
+        app            varchar(240) null,
+        type           varchar(80)  null,
+        body           text         null,
+        last_sync_data timestamp    null,
+        app_ids        varchar(13)  null,
+        data_id        varchar(240) null,
+        source         varchar(80)  null,
+        is_delete      char         null,
+        tenant_id      varchar(64)  null,
+        create_user    varchar(64)  null,
+        create_date    timestamp    null,
+        update_user    varchar(64)  null,
+        update_date    timestamp    null
+        );
+        create index if not exists idx_name on meta_model_data (name);
+        comment on table meta_model_data is '模型数据';
+        comment on column meta_model_data.name is '名称';
+        comment on column meta_model_data.model is '模型';
+        comment on column meta_model_data.app is '应用';
+        comment on column meta_model_data.type is '类型';
+        comment on column meta_model_data.body is '种子数据JSON';
+        comment on column meta_model_data.last_sync_data is '最后同步时间';
+        comment on column meta_model_data.app_ids is '应用Id';
+        comment on column meta_model_data.data_id is '数据id';
+        comment on column meta_model_data.source is '来源';
+        comment on column meta_model_data.is_delete is '软删除';
+        comment on column meta_model_data.tenant_id is '租户ID';
+        comment on column meta_model_data.create_user is '创建人';
+        comment on column meta_model_data.create_date is '创建时间';
+        comment on column meta_model_data.update_user is '更新人';
+        comment on column meta_model_data.update_date is '更新时间';
+    </insert>
+
+    <insert id="createUiFileSeed" dbType="postgresql">
+        create table if not exists ui_file_seed
+        (
+        id                varchar(64)  not null primary key,
+        name              varchar(512) null,
+        path              varchar(512) null,
+        file_archive_path varchar(512) null,
+        download_path     varchar(512) null,
+        attachment_id     varchar(64)  null,
+        url               varchar(512) null,
+        md5               varchar(64)  null,
+        bucket            varchar(128) null,
+        app_id            varchar(64)  null,
+        model_id          varchar(240) null,
+        is_delete         char         null,
+        tenant_id         varchar(64)  null,
+        create_user       varchar(64)  null,
+        create_date       timestamp    null,
+        update_user       varchar(64)  null,
+        update_date       timestamp    null
+        );
+        comment on table ui_file_seed is '种子数据附件';
+        comment on column ui_file_seed.name is '文件名称';
+        comment on column ui_file_seed.path is 'app路径';
+        comment on column ui_file_seed.file_archive_path is 'app完整路径';
+        comment on column ui_file_seed.download_path is '下载路径';
+        comment on column ui_file_seed.attachment_id is '附件表id';
+        comment on column ui_file_seed.url is '完整地址';
+        comment on column ui_file_seed.md5 is 'md5';
+        comment on column ui_file_seed.bucket is 'bucket名称';
+        comment on column ui_file_seed.app_id is '应用';
+        comment on column ui_file_seed.model_id is '模型';
+        comment on column ui_file_seed.is_delete is '软删除';
+        comment on column ui_file_seed.tenant_id is '租户ID';
+        comment on column ui_file_seed.create_user is '创建人';
+        comment on column ui_file_seed.create_date is '创建时间';
+        comment on column ui_file_seed.update_user is '更新人';
+        comment on column ui_file_seed.update_date is '更新时间';
+    </insert>
+
+    <insert id="createUiViewSeed" dbType="postgresql">
+        create table if not exists ui_view_seed
+        (
+        id          varchar(64)  not null primary key,
+        name        varchar(240) null,
+        model       varchar(240) null,
+        "key"       varchar(240) null,
+        priority    int          null,
+        active      char         null,
+        body        text         null,
+        type        varchar(80)  null,
+        is_delete   char         null,
+        mode        varchar(80)  null,
+        inherit_ids varchar(64)  null,
+        app_ids     varchar(64)  null,
+        tenant_id   varchar(64)  null,
+        create_user varchar(64)  null,
+        create_date timestamp    null,
+        update_user varchar(64)  null,
+        update_date timestamp    null
+        );
+        comment on table ui_view_seed is '后端种子视图';
+        comment on column ui_view_seed.name is '名称';
+        comment on column ui_view_seed.model is '模型';
+        comment on column ui_view_seed."key" is '别名';
+        comment on column ui_view_seed.priority is '顺序';
+        comment on column ui_view_seed.active is '状态';
+        comment on column ui_view_seed.body is '视图结构';
+        comment on column ui_view_seed.type is '类型';
+        comment on column ui_view_seed.is_delete is '软删除';
+        comment on column ui_view_seed.mode is '模式';
+        comment on column ui_view_seed.inherit_ids is '继承视图';
+        comment on column ui_view_seed.app_ids is '应用';
+        comment on column ui_view_seed.tenant_id is '租户ID';
+        comment on column ui_view_seed.create_user is '创建人';
+        comment on column ui_view_seed.create_date is '创建时间';
+        comment on column ui_view_seed.update_user is '更新人';
+        comment on column ui_view_seed.update_date is '更新时间';
+    </insert>
+
+    <insert id="createConfigCenter" dbType="postgresql">
+        create table if not exists config_center
+        (
+        id        varchar(64)   not null primary key,
+        app       varchar(240)  null,
+        tag       varchar(240)  null,
+        type      varchar(240)  null,
+        "key"     varchar(240)  null,
+        value     varchar(2000) null,
+        "desc"    varchar(240)  null,
+        required  char          null,
+        tenant_id varchar(64)   null
+        );
+        comment on table config_center is '配置中心';
+        comment on column config_center.app is '应用';
+        comment on column config_center.tag is '版本';
+        comment on column config_center.type is 'type';
+        comment on column config_center."key" is '配置项';
+        comment on column config_center.value is '配置值';
+        comment on column config_center."desc" is '描述';
+        comment on column config_center.required is '是否必填';
+        comment on column config_center.tenant_id is '租户ID';
+    </insert>
+</xml>

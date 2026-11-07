@@ -1,0 +1,174 @@
+{
+  "views": {
+    "code_rule_grid": {
+      "body": {
+        "buttons": [
+          {
+            "action": "edit",
+            "auth": "update",
+            "name": "编辑"
+          },
+          {
+            "auth": "nextCode",
+            "name": "试算下一个编码",
+            "model": "code_rule",
+            "service": "nextCode"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "规则编码",
+            "name": "code"
+          },
+          {
+            "displayName": "规则名称",
+            "name": "name"
+          },
+          {
+            "displayName": "前缀",
+            "name": "prefix"
+          },
+          {
+            "displayName": "流水号长度",
+            "name": "serialLength"
+          },
+          {
+            "displayName": "日期格式",
+            "name": "dateFormat"
+          }
+        ],
+        "tbar": [
+          {
+            "action": "create",
+            "auth": "create",
+            "name": "新增"
+          },
+          {
+            "action": "delete",
+            "auth": "delete",
+            "name": "删除"
+          }
+        ],
+        "type": "grid"
+      },
+      "mode": "primary",
+      "model": "code_rule",
+      "name": "编码规则-表格",
+      "type": "grid"
+    },
+    "code_rule_form": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "规则编码",
+            "name": "code"
+          },
+          {
+            "displayName": "规则名称",
+            "name": "name"
+          },
+          {
+            "displayName": "前缀",
+            "name": "prefix"
+          },
+          {
+            "displayName": "流水号长度",
+            "name": "serialLength"
+          },
+          {
+            "displayName": "日期格式",
+            "name": "dateFormat"
+          }
+        ],
+        "tabs": [
+          {
+            "header": "规则明细",
+            "field": "details",
+            "type": "grid,form",
+            "tbar": [
+              {
+                "action": "createEr",
+                "auth": "create",
+                "name": "新增明细"
+              },
+              {
+                "action": "deleteEr",
+                "auth": "delete",
+                "name": "删除明细"
+              }
+            ],
+            "buttons": [
+              {
+                "action": "updateEr",
+                "auth": "update",
+                "name": "保存明细"
+              }
+            ],
+            "body": {
+              "type": "grid",
+              "columns": [
+                {
+                  "displayName": "日期段",
+                  "name": "dateKey"
+                },
+                {
+                  "displayName": "当前流水号",
+                  "name": "currentSerial"
+                }
+              ],
+              "tbar": [],
+              "buttons": [
+                {
+                  "action": "edit",
+                  "auth": "update",
+                  "name": "编辑"
+                }
+              ]
+            },
+            "edit": {
+              "type": "form",
+              "columns": [
+                {
+                  "displayName": "日期段",
+                  "name": "dateKey"
+                },
+                {
+                  "displayName": "当前流水号",
+                  "name": "currentSerial"
+                }
+              ]
+            }
+          }
+        ],
+        "type": "form"
+      },
+      "mode": "primary",
+      "model": "code_rule",
+      "name": "编码规则-表单",
+      "type": "form"
+    },
+    "code_rule_search": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "规则编码",
+            "name": "code"
+          },
+          {
+            "displayName": "规则名称",
+            "name": "name"
+          },
+          {
+            "displayName": "日期格式",
+            "name": "dateFormat"
+          }
+        ],
+        "type": "search"
+      },
+      "mode": "primary",
+      "model": "code_rule",
+      "name": "编码规则-搜索",
+      "type": "search"
+    }
+  }
+}

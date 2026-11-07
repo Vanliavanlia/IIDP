@@ -1,6 +1,7 @@
 # =====================================================================
 # IIDP 实验项目 .gitignore
 # 原则：源码、配置、脚本、文档入库；构建产物与本机运行依赖不入库
+# 注意：带 / 前缀的路径只在仓库根目录生效，避免误伤 Java 包目录（如 com/）
 # =====================================================================
 
 # ---------- 构建产物 ----------
@@ -26,18 +27,18 @@ logs/
 .settings/
 
 # ---------- 本机运行依赖（体积大，来自培训方压缩包，不入库）----------
-maven-repository/
-offline-repo/
-.m2repo/
-.m2repo_backup/
-mysql-data/
-runtime/
-iidp-frontend-dist/
-iidp-backend-demo/apps/modules/
-_extract/
-Server8061/
-cafeteria_design/
-com/
+/maven-repository/
+/offline-repo/
+/.m2repo/
+/.m2repo_backup/
+/mysql-data/
+/runtime/
+/iidp-frontend-dist/
+/_extract/
+/Server8061/
+/cafeteria_design/
+/com/
+/iidp-backend-demo/apps/modules/
 
 # ---------- 系统文件 ----------
 Thumbs.db

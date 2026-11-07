@@ -1,0 +1,30 @@
+{
+  "loaders": {
+    "API": "com.sie.snest.engine.loaders.ApiLoader",
+    "SDK": "com.sie.snest.sdk.loaders.SdkLoader"
+  },
+  "apiToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhZG1pbiIsImlhdCI6MTY5NjkwMTA0Mn0.gGp3YyxJzxdVdL3FBkNmA1BpWogmBXQd8qFlQ82yrVY8lF82ODf83OSOQa4Hg3fEwSdLJUgVUvD4-cnzSeI1tudT-_HEcUv4yLIViFLkJH5e0TiOcKJPLC43On42JQk3BvsQ8kmZhguGiy6caT5uGkM9pyHFbf6PT2iz559yLRs",
+  "apps": {
+    "SDK": [
+      "sie-iidp-app-store-app-v3.0.1-RELEASE.jar",
+      "sie-iidp-file-v3.0.1-RELEASE.jar",
+      "sie-iidp-dict-v3.0.0-RELEASE.jar",
+      "sie-iidp-log-v3.0.1-RELEASE.jar",
+      "sie-iidp-config-v3.0.1-RELEASE.jar",
+      "sie-iidp-cache-v3.0.1-RELEASE.jar",
+      "sie-iidp-user-prefer-v3.0.0-RELEASE.jar",
+      "sie-iidp-tenant-v3.0.1-RELEASE.jar",
+      "sie-iidp-iam-v3.0.1-HOTFIX.001.jar",
+      "sie-iidp-dev-center-v3.0.0-RELEASE.jar",
+      "sie-iidp-i18n-v3.0.0-RELEASE.jar",
+      "sie-snest-mes-1.0-SNAPSHOT.jar",
+      "sie-snest-wms-1.0-SNAPSHOT.jar"
+    ],
+    "SDK-OUT": [
+    ],
+    "API": [
+    ],
+    "API-OUT": [
+    ]
+  }
+}
