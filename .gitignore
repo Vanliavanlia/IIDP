@@ -44,3 +44,6 @@ logs/
 Thumbs.db
 .DS_Store
 desktop.ini
+
+# 项目专用 SSH 私钥（仅本机推送用，绝不提交）
+/.gitkeys/
