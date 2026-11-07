@@ -711,3 +711,26 @@ git push -u origin main
    query 的 `model`/`service` 换成要调的服务；body 用示例（查询物料 / 生成编码 / 扩展服务建订单 三选一）。
 
 > 常见错误对照：`7100 token不能为空` → 少了 `Authorization` 头；`token失效，请退出重新登录` → `Authorization` 少了 `Bearer ` 前缀；`403 无权访问：模型[x] 服务[y]` → 该角色未授权此应用，去「租户管理 → 授权」勾上；`2000 字典配置有误` → 字典数据缺失。
+
+## 14. 引擎知识库（厂商资料归档）
+
+`docs/vendor/sie-snest-engine/` 是培训方发的 `iidp-skills-master.zip` 原样归档，共 17 篇、253 KB，讲的是 sie-snest 引擎的设计原理与踩坑点。**它不是本项目的运行依赖**，但几篇东西值得先读：
+
+| 先读这篇 | 什么时候看 |
+|---|---|
+| [`SKILL.md`](docs/vendor/sie-snest-engine/SKILL.md) | 想搞懂 `@Model` / `RecordSet` / `callSuper` 到底怎么运作，以及 12 条踩坑点 |
+| [`reference/sdk-model.md`](docs/vendor/sie-snest-engine/reference/sdk-model.md) | 写模型时查 `@Property` / `@Validate` / `@Rules` 有哪些属性 |
+| [`reference/engine-runtime.md`](docs/vendor/sie-snest-engine/reference/engine-runtime.md) | 服务调不通、`call` 与 `callSuper` 行为不符预期 |
+| [`reference/seed-data.md`](docs/vendor/sie-snest-engine/reference/seed-data.md) | “我改了 `data/*.json` 为什么没生效” |
+| [`reference/data-scope.md`](docs/vendor/sie-snest-engine/reference/data-scope.md) | 权限/数据隔离类问题 |
+
+`reference/` 里另外 10 篇是 SaaS 多版本、分布式路由、Redis 摘要同步等商业版内部机制，**单机 demo 用不上，可以跳过**（详见该目录的 `README.md` 分级表）。
+
+读完这份资料，我们据此修正了 6 处认知/代码，记在本节末尾：
+
+1. **两种 `search` 是两条路**：`new Xxx().search(...)` / `this.search(...)` 走 SDK 本地 `DbUtils`，**不进方法重写链、不做数据权限注入**；只有 `rs.call("search", ...)` / `rs.callSuper(X.class, "search", ...)` 才落到引擎 `BussModelDataAccess`。做数据隔离必须用后者。
+2. **seed 由应用市场 install/update 触发**，不是每次启动都导；改完 `data/*.json` 要让 app 走一次更新（或清库重装）才生效。
+3. **`@Property(unique = true)` 能直接做“编码唯一”**，不必手写 `validate`（第 8 节 BOM 的 `@Unique` 就是这么实现的）。
+4. **`@Model(parent = ...)` 是 `String[]`**（多继承），我们写的 `parent = "order"` 是单元素数组，合法。
+5. **superuser 在授权源头短路**，连租户过滤一起跳过——只有它能无条件调通所有模型服务，生产环境必须改初始密码。
+6. **手写排查 SQL 前先读 `@Model`**：列名以 `@Property`/`@JoinColumn` 声明为准，且不要假设有 `delete_flag` 列（只有开了逻辑删除的表才有）。
