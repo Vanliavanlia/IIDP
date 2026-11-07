@@ -1,0 +1,45 @@
+# =====================================================================
+# IIDP 实验项目 .gitignore
+# 原则：源码、配置、脚本、文档入库；构建产物与本机运行依赖不入库
+# =====================================================================
+
+# ---------- 构建产物 ----------
+target/
+build/
+out/
+*.class
+*.jar.original
+.flattened-pom.xml
+
+# ---------- 日志 ----------
+logs/
+*.log
+
+# ---------- IDE ----------
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.classpath
+.project
+.settings/
+
+# ---------- 本机运行依赖（体积大，来自培训方压缩包，不入库）----------
+maven-repository/
+offline-repo/
+.m2repo/
+.m2repo_backup/
+mysql-data/
+runtime/
+iidp-frontend-dist/
+iidp-backend-demo/apps/modules/
+_extract/
+Server8061/
+cafeteria_design/
+com/
+
+# ---------- 系统文件 ----------
+Thumbs.db
+.DS_Store
+desktop.ini
