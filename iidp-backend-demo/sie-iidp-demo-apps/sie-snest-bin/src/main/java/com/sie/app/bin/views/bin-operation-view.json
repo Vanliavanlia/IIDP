@@ -1,0 +1,158 @@
+{
+  "views": {
+    "bin_operation_grid": {
+      "body": {
+        "buttons": [
+          {
+            "action": "edit",
+            "auth": "update",
+            "name": "编辑"
+          },
+          {
+            "action": "service",
+            "auth": "start",
+            "name": "开工",
+            "model": "bin_operation",
+            "service": "start"
+          },
+          {
+            "action": "service",
+            "auth": "complete",
+            "name": "完工",
+            "model": "bin_operation",
+            "service": "complete"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "生产工单",
+            "name": "order"
+          },
+          {
+            "displayName": "工序号",
+            "name": "seq"
+          },
+          {
+            "displayName": "工序名称",
+            "name": "stageName"
+          },
+          {
+            "displayName": "使用设备",
+            "name": "machine"
+          },
+          {
+            "displayName": "操作工",
+            "name": "operator"
+          },
+          {
+            "displayName": "执行状态",
+            "name": "status"
+          },
+          {
+            "displayName": "质检结果",
+            "name": "result"
+          },
+          {
+            "displayName": "完成时间",
+            "name": "endTime"
+          }
+        ],
+        "tbar": [
+          {
+            "action": "create",
+            "auth": "create",
+            "name": "新增"
+          },
+          {
+            "action": "delete",
+            "auth": "delete",
+            "name": "删除"
+          }
+        ],
+        "type": "grid"
+      },
+      "mode": "primary",
+      "model": "bin_operation",
+      "name": "工序记录-表格",
+      "type": "grid"
+    },
+    "bin_operation_form": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "生产工单",
+            "name": "order"
+          },
+          {
+            "displayName": "工序号",
+            "name": "seq"
+          },
+          {
+            "displayName": "工序",
+            "name": "stage"
+          },
+          {
+            "displayName": "工序名称",
+            "name": "stageName"
+          },
+          {
+            "displayName": "使用设备",
+            "name": "machine"
+          },
+          {
+            "displayName": "操作工",
+            "name": "operator"
+          },
+          {
+            "displayName": "开始时间",
+            "name": "startTime"
+          },
+          {
+            "displayName": "完成时间",
+            "name": "endTime"
+          },
+          {
+            "displayName": "执行状态",
+            "name": "status"
+          },
+          {
+            "displayName": "质检结果",
+            "name": "result"
+          },
+          {
+            "displayName": "备注",
+            "name": "remark"
+          }
+        ],
+        "type": "form"
+      },
+      "mode": "primary",
+      "model": "bin_operation",
+      "name": "工序记录-表单",
+      "type": "form"
+    },
+    "bin_operation_search": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "生产工单",
+            "name": "order"
+          },
+          {
+            "displayName": "工序名称",
+            "name": "stageName"
+          },
+          {
+            "displayName": "执行状态",
+            "name": "status"
+          }
+        ],
+        "type": "search"
+      },
+      "mode": "primary",
+      "model": "bin_operation",
+      "name": "工序记录-搜索",
+      "type": "search"
+    }
+  }
+}

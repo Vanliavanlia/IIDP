@@ -1,0 +1,120 @@
+{
+  "views": {
+    "bin_packing_grid": {
+      "body": {
+        "buttons": [
+          {
+            "action": "edit",
+            "auth": "update",
+            "name": "编辑"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "生产工单",
+            "name": "order"
+          },
+          {
+            "displayName": "包装方式",
+            "name": "boxType"
+          },
+          {
+            "displayName": "每箱数量",
+            "name": "qtyPerBox"
+          },
+          {
+            "displayName": "箱数",
+            "name": "boxCount"
+          },
+          {
+            "displayName": "毛重(kg)",
+            "name": "grossWeight"
+          },
+          {
+            "displayName": "打包日期",
+            "name": "packDate"
+          }
+        ],
+        "tbar": [
+          {
+            "action": "create",
+            "auth": "create",
+            "name": "新增"
+          },
+          {
+            "action": "delete",
+            "auth": "delete",
+            "name": "删除"
+          }
+        ],
+        "type": "grid"
+      },
+      "mode": "primary",
+      "model": "bin_packing",
+      "name": "包装记录-表格",
+      "type": "grid"
+    },
+    "bin_packing_form": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "生产工单",
+            "name": "order"
+          },
+          {
+            "displayName": "包装方式",
+            "name": "boxType"
+          },
+          {
+            "displayName": "每箱数量",
+            "name": "qtyPerBox"
+          },
+          {
+            "displayName": "箱数",
+            "name": "boxCount"
+          },
+          {
+            "displayName": "毛重(kg)",
+            "name": "grossWeight"
+          },
+          {
+            "displayName": "打包日期",
+            "name": "packDate"
+          },
+          {
+            "displayName": "打包人",
+            "name": "operator"
+          },
+          {
+            "displayName": "备注",
+            "name": "remark"
+          }
+        ],
+        "type": "form"
+      },
+      "mode": "primary",
+      "model": "bin_packing",
+      "name": "包装记录-表单",
+      "type": "form"
+    },
+    "bin_packing_search": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "生产工单",
+            "name": "order"
+          },
+          {
+            "displayName": "包装方式",
+            "name": "boxType"
+          }
+        ],
+        "type": "search"
+      },
+      "mode": "primary",
+      "model": "bin_packing",
+      "name": "包装记录-搜索",
+      "type": "search"
+    }
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "views": {
+    "bin_shipment_grid": {
+      "body": {
+        "buttons": [
+          {
+            "action": "edit",
+            "auth": "update",
+            "name": "编辑"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "生产工单",
+            "name": "order"
+          },
+          {
+            "displayName": "发货单号",
+            "name": "shipNo"
+          },
+          {
+            "displayName": "承运商",
+            "name": "carrier"
+          },
+          {
+            "displayName": "物流单号",
+            "name": "trackingNo"
+          },
+          {
+            "displayName": "发货数量",
+            "name": "quantity"
+          },
+          {
+            "displayName": "发货日期",
+            "name": "shipDate"
+          },
+          {
+            "displayName": "物流状态",
+            "name": "status"
+          }
+        ],
+        "tbar": [
+          {
+            "action": "create",
+            "auth": "create",
+            "name": "新增"
+          },
+          {
+            "action": "delete",
+            "auth": "delete",
+            "name": "删除"
+          }
+        ],
+        "type": "grid"
+      },
+      "mode": "primary",
+      "model": "bin_shipment",
+      "name": "发货单-表格",
+      "type": "grid"
+    },
+    "bin_shipment_form": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "生产工单",
+            "name": "order"
+          },
+          {
+            "displayName": "发货单号",
+            "name": "shipNo"
+          },
+          {
+            "displayName": "承运商",
+            "name": "carrier"
+          },
+          {
+            "displayName": "物流单号",
+            "name": "trackingNo"
+          },
+          {
+            "displayName": "发货数量",
+            "name": "quantity"
+          },
+          {
+            "displayName": "收货人",
+            "name": "receiver"
+          },
+          {
+            "displayName": "发货日期",
+            "name": "shipDate"
+          },
+          {
+            "displayName": "物流状态",
+            "name": "status"
+          },
+          {
+            "displayName": "备注",
+            "name": "remark"
+          }
+        ],
+        "type": "form"
+      },
+      "mode": "primary",
+      "model": "bin_shipment",
+      "name": "发货单-表单",
+      "type": "form"
+    },
+    "bin_shipment_search": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "发货单号",
+            "name": "shipNo"
+          },
+          {
+            "displayName": "承运商",
+            "name": "carrier"
+          },
+          {
+            "displayName": "物流状态",
+            "name": "status"
+          }
+        ],
+        "type": "search"
+      },
+      "mode": "primary",
+      "model": "bin_shipment",
+      "name": "发货单-搜索",
+      "type": "search"
+    }
+  }
+}

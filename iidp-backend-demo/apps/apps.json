@@ -18,13 +18,11 @@
       "sie-iidp-dev-center-v3.0.0-RELEASE.jar",
       "sie-iidp-i18n-v3.0.0-RELEASE.jar",
       "sie-snest-mes-1.0-SNAPSHOT.jar",
-      "sie-snest-wms-1.0-SNAPSHOT.jar"
+      "sie-snest-wms-1.0-SNAPSHOT.jar",
+      "sie-snest-bin-1.0-SNAPSHOT.jar"
     ],
-    "SDK-OUT": [
-    ],
-    "API": [
-    ],
-    "API-OUT": [
-    ]
+    "SDK-OUT": [],
+    "API": [],
+    "API-OUT": []
   }
 }

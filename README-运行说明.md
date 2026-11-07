@@ -800,3 +800,121 @@ implementer material.searchMine  → 2 条：只剩 rbac_user_implementer 自己
 ### 15.3 编码生成的并发问题
 
 `BarcodeRule.generateCode` 是「查明细 → 序号 +1 → 更新」三步，非原子。本次给它加了 `synchronized`（单实例够用）并在注释里写明：**多实例/集群必须改成数据库原子自增或行锁**，否则两个 pod 会取到同一个流水号。`CodeRuleGenerator.generate`（第 10 节）本来就是 `synchronized`，问题相同。
+
+## 16. 新增业务系统：垃圾桶生产管理（BIN-APP）
+
+本节是按实际需求新增的第三个业务 APP：一间做不锈钢垃圾桶的工厂，要管住"从一卷钢材到客户签收"的全过程。
+
+### 16.1 业务链条
+
+```
+客户下单 → 生产工单 → 十道工序 → 喷涂（底漆/面漆/保护膜）→ LOGO 制作
+        → 防水测试 → 打包 → 发货 → 客户签收
+```
+
+型号决定筒体材质、容量、尺寸；客户决定 LOGO 图案与收货地址；工单把两者绑在一起，并驱动工序记录。
+
+### 16.2 模型（9 张表，`sie-snest-bin` 模块）
+
+| 模型 | 表名 | 关键字段 | 说明 |
+|---|---|---|---|
+| `bin_customer` | `bin_customer` | 名称、编码、联系人、电话、地址 | 客户档案，LOGO 与发货的归属方 |
+| `bin_model` | `bin_model` | 类别、材质、容量(L)、直径/高度(mm)、单重 | 可生产的垃圾桶型号 |
+| `bin_order` | `bin_order` | 工单号、客户、型号、数量、面漆颜色、是否加LOGO、交期、状态 | 生产工单（聚合根） |
+| `bin_operation` | `bin_operation` | 工单、工序号、工序、设备、操作工、开始/完成时间、状态、质检结果 | 工单 × 十道工序的执行记录 |
+| `bin_paint` | `bin_paint` | 底漆型号/批次、面漆色号/颜色、遍数、保护膜型号、烘干温度 | 喷涂三段工艺参数 |
+| `bin_logo` | `bin_logo` | 归属客户、位置、宽/高、工艺、LOGO 文件、制作人 | 桶身正面客户 LOGO |
+| `bin_test` | `bin_test` | 水压(kPa)、时长(s)、抽检数、渗漏位置、检验员、结论 | 防水测试记录 |
+| `bin_packing` | `bin_packing` | 包装方式、每箱数量、箱数、毛重 | 打包记录 |
+| `bin_shipment` | `bin_shipment` | 发货单号、承运商、物流单号、数量、收货人、物流状态 | 发货与物流跟踪 |
+
+关系：`bin_order` 1—N `bin_operation` / `bin_paint` / `bin_logo` / `bin_test` / `bin_packing` / `bin_shipment`；
+`bin_order` N—1 `bin_customer`、`bin_model`。所有外键列都显式指定了 `@JoinColumn(name = "..._id")`（避免 `order` 这种 MySQL 保留字做列名）。
+
+### 16.3 工艺路线（`com.sie.app.bin.util.BinStages.ALL`）
+
+| 工序号 | 工序 | 默认设备 |
+|---|---|---|
+| 1 | 钢材初加工 | 剪板机 |
+| 2 | 裁剪 | 激光切割机 |
+| 3 | 定型 | 液压成型机 |
+| 4 | 上底漆 | 喷涂线 |
+| 5 | 上面漆 | 喷涂线 |
+| 6 | 上保护膜 | 喷涂线 |
+| 7 | LOGO 制作 | 丝印台 |
+| 8 | 防水测试 | 水压测试台 |
+| 9 | 打包装 | 包装工位 |
+| 10 | 发货 | 成品库 |
+
+### 16.4 工单状态机
+
+```
+draft(待投产) --plan / startProduction--> working(生产中)
+working --十道工序全部完工--> toship(待发货)
+toship --登记发货单--> shipped(已发货)
+shipped --> done(已完工)
+```
+
+### 16.5 服务
+
+| 模型 | 服务 | 作用 |
+|---|---|---|
+| `bin_order` | `create` | 建单时自动生成 `BZ + yyyyMMdd + 4 位流水` 工单号并写 `create_user` |
+| `bin_order` | `plan` | 按工艺路线生成/重置十道工序，并把工单置为「生产中」 |
+| `bin_order` | `startProduction` | 工单投产 |
+| `bin_order` | `progress` | 返回 `进度 4/10，下一道：上面漆` |
+| `bin_operation` | `start` | 工序开工（记录开始时间，工单自动转「生产中」） |
+| `bin_operation` | `complete` | 工序完工（记录完成时间与质检结果；全部完成后工单转「待发货」） |
+
+### 16.6 菜单
+
+「垃圾桶生产管理」下 9 个菜单：产品型号、客户、生产工单、工序记录、喷涂记录、LOGO 制作、防水测试、包装记录、发货单。
+生产工单的表单里还有一个「工序计划」页签（`@OneToMany` 子表），可以直接看到这单的十道工序。
+
+### 16.7 实测（implementer 登录，经 nginx 30666）
+
+```text
+bin_order.create  {"customer":"bin_customer_001","binModel":"bin_model_001","quantity":50,
+                   "colorName":"墨绿","logoRequired":"yes","dueDate":"2026-12-20"}
+ → 工单 06ck2ffjioen1，工单号 BZ202611070001（自动生成），状态 draft
+
+bin_order.plan    {"id":"06ck2ffjioen1"}
+ → 生成 10 条工序：钢材初加工 / 裁剪 / 定型 / 上底漆 / 上面漆 / 上保护膜 / LOGO 制作 / 防水测试 / 打包装 / 发货
+ → 工单状态变为 working
+
+bin_operation.start / complete  ×4
+ → 进度 4/10，下一道：上面漆
+
+（继续把剩下 6 道完工）
+ → 进度 10/10，下一道：已全部完成
+ → 工单状态自动变为 toship（待发货）
+
+bin_paint.create    底漆 EP-100 / 批次 B20261030 / 面漆 RAL6005 墨绿 / 2 遍 / 保护膜 PE-透明 / 60℃
+bin_logo.create     华润物业 LOGO / 桶身正面中部 / 180×90mm / 丝印
+bin_test.create     30.5kPa / 120 秒 / 抽检 5 件 / 无渗漏 / 合格
+bin_packing.create  托盘 / 每托 10 只 / 5 托 / 毛重 195kg
+bin_shipment.create SH2026121001 / 顺丰物流 / SF8899001122 / 50 只 / 运输中
+```
+
+租户侧：`rbac_tenant.listPermission` 从 16 项变 **18 项**（新增 `BIN`、`BIN-APP(bin)`），对 `000001` 租户 `grant` 后，`admin_000001` 登录看到 **58 条菜单**，含「垃圾桶生产管理」下全部 9 个菜单。
+
+### 16.8 页面上怎么点
+
+1. `implementer / Implementer_2023` 登录 → 左侧「垃圾桶生产管理 → 生产工单」→ 新增（选客户、型号、数量、面漆颜色、是否需要 LOGO、交期）
+2. 选中工单 → 点「生成工序」→ 打开表单的「工序计划」页签，能看到 10 道工序
+3. 到「工序记录」里逐条「开工」→「完工」，`progress` 服务能看到实时进度
+4. 按工艺实际发生顺序录入：喷涂记录、LOGO 制作、防水测试、包装记录、发货单
+5. 十道全完工后工单自动变「待发货」，登记发货单即可交付
+
+### 16.9 需求 → 落地对照
+
+| 你的描述 | 落地位置 |
+|---|---|
+| 不同类型垃圾桶 | `bin_model`（类别：家用 / 户外 / 分类 / 环卫；材质：304 / 201 / 镀锌） |
+| 不锈钢钢材初加工 | 工序 1「钢材初加工」+ 型号的「筒体材质」字段 |
+| 机器裁剪、定型 | 工序 2「裁剪」（激光切割机）、工序 3「定型」（液压成型机） |
+| 先上底漆、再上不同颜色、最后保护膜 | 工序 4/5/6 + `bin_paint` 记录底漆型号批次、面漆色号颜色、保护膜型号、烘干温度 |
+| 正面加客户 LOGO | 工序 7 + `bin_logo`（位置、尺寸、工艺、LOGO 文件、归属客户） |
+| 防水测试 | 工序 8 + `bin_test`（水压、时长、抽检数、渗漏点、结论） |
+| 打包装 | 工序 9 + `bin_packing`（纸箱/木箱/托盘、每箱数量、箱数、毛重） |
+| 发货 | 工序 10 + `bin_shipment`（发货单号、承运商、物流单号、收货人、物流状态） |

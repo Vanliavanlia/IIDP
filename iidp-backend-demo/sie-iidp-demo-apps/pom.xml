@@ -14,6 +14,7 @@
     <modules>
         <module>sie-snest-mes</module>
         <module>sie-snest-wms</module>
+        <module>sie-snest-bin</module>
     </modules>
 
     <dependencies>

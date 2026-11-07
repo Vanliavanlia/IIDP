@@ -1,0 +1,32 @@
+{
+  "name": "bin",
+  "displayName": "BIN-APP",
+  "author": "gh",
+  "company": "sie",
+  "category": "BIN",
+  "product": "BIN",
+  "description": "垃圾桶生产管理BIN-APP",
+  "summary": "垃圾桶从钢材初加工到发货的全流程管理",
+  "type": "SDK",
+  "tag": "master",
+  "version": "0.0.1",
+  "resolved": "com.sie.app.bin",
+  "dependencies": [],
+  "application": true,
+  "icon": null,
+  "license": "LGPL 3.0",
+  "view": [
+    "bin-customer-view.json",
+    "bin-model-view.json",
+    "bin-order-view.json",
+    "bin-operation-view.json",
+    "bin-paint-view.json",
+    "bin-logo-view.json",
+    "bin-test-view.json",
+    "bin-packing-view.json",
+    "bin-shipment-view.json"
+  ],
+  "data": [
+    "data/bin-seed.json"
+  ]
+}

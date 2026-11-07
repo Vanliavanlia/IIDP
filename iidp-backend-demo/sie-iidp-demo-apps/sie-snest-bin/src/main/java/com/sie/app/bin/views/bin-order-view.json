@@ -1,0 +1,234 @@
+{
+  "views": {
+    "bin_order_grid": {
+      "body": {
+        "buttons": [
+          {
+            "action": "edit",
+            "auth": "update",
+            "name": "编辑"
+          },
+          {
+            "action": "service",
+            "auth": "plan",
+            "name": "生成工序",
+            "model": "bin_order",
+            "service": "plan"
+          },
+          {
+            "action": "service",
+            "auth": "startProduction",
+            "name": "投产",
+            "model": "bin_order",
+            "service": "startProduction"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "工单号",
+            "name": "code"
+          },
+          {
+            "displayName": "客户",
+            "name": "customer"
+          },
+          {
+            "displayName": "垃圾桶型号",
+            "name": "binModel"
+          },
+          {
+            "displayName": "生产数量",
+            "name": "quantity"
+          },
+          {
+            "displayName": "面漆颜色",
+            "name": "colorName"
+          },
+          {
+            "displayName": "工单状态",
+            "name": "status"
+          },
+          {
+            "displayName": "交付日期",
+            "name": "dueDate"
+          }
+        ],
+        "tbar": [
+          {
+            "action": "create",
+            "auth": "create",
+            "name": "新增"
+          },
+          {
+            "action": "delete",
+            "auth": "delete",
+            "name": "删除"
+          }
+        ],
+        "type": "grid"
+      },
+      "mode": "primary",
+      "model": "bin_order",
+      "name": "生产工单-表格",
+      "type": "grid"
+    },
+    "bin_order_form": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "工单号",
+            "name": "code"
+          },
+          {
+            "displayName": "客户",
+            "name": "customer"
+          },
+          {
+            "displayName": "垃圾桶型号",
+            "name": "binModel"
+          },
+          {
+            "displayName": "生产数量",
+            "name": "quantity"
+          },
+          {
+            "displayName": "面漆颜色",
+            "name": "colorName"
+          },
+          {
+            "displayName": "是否加客户LOGO",
+            "name": "logoRequired"
+          },
+          {
+            "displayName": "计划开工",
+            "name": "planStart"
+          },
+          {
+            "displayName": "交付日期",
+            "name": "dueDate"
+          },
+          {
+            "displayName": "工单状态",
+            "name": "status"
+          },
+          {
+            "displayName": "备注",
+            "name": "remark"
+          }
+        ],
+        "type": "form",
+        "tabs": [
+          {
+            "header": "工序计划",
+            "field": "operations",
+            "type": "grid,form",
+            "tbar": [
+              {
+                "action": "createEr",
+                "auth": "create",
+                "name": "新增工序"
+              },
+              {
+                "action": "deleteEr",
+                "auth": "delete",
+                "name": "删除工序"
+              }
+            ],
+            "buttons": [
+              {
+                "action": "updateEr",
+                "auth": "update",
+                "name": "保存工序"
+              }
+            ],
+            "body": {
+              "type": "grid",
+              "columns": [
+                {
+                  "displayName": "工序号",
+                  "name": "seq"
+                },
+                {
+                  "displayName": "工序名称",
+                  "name": "stageName"
+                },
+                {
+                  "displayName": "执行状态",
+                  "name": "status"
+                },
+                {
+                  "displayName": "质检结果",
+                  "name": "result"
+                }
+              ],
+              "tbar": [],
+              "buttons": [
+                {
+                  "action": "edit",
+                  "auth": "update",
+                  "name": "编辑"
+                }
+              ]
+            },
+            "edit": {
+              "type": "form",
+              "columns": [
+                {
+                  "displayName": "工序号",
+                  "name": "seq"
+                },
+                {
+                  "displayName": "工序名称",
+                  "name": "stageName"
+                },
+                {
+                  "displayName": "使用设备",
+                  "name": "machine"
+                },
+                {
+                  "displayName": "操作工",
+                  "name": "operator"
+                },
+                {
+                  "displayName": "执行状态",
+                  "name": "status"
+                },
+                {
+                  "displayName": "质检结果",
+                  "name": "result"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "mode": "primary",
+      "model": "bin_order",
+      "name": "生产工单-表单",
+      "type": "form"
+    },
+    "bin_order_search": {
+      "body": {
+        "columns": [
+          {
+            "displayName": "工单号",
+            "name": "code"
+          },
+          {
+            "displayName": "客户",
+            "name": "customer"
+          },
+          {
+            "displayName": "工单状态",
+            "name": "status"
+          }
+        ],
+        "type": "search"
+      },
+      "mode": "primary",
+      "model": "bin_order",
+      "name": "生产工单-搜索",
+      "type": "search"
+    }
+  }
+}
