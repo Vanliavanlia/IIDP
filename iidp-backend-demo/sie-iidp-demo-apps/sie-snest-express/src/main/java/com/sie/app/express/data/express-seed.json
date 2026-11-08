@@ -115,6 +115,26 @@
         "appAll": "1",
         "tenantId": "rbac_tenant_root"
       }
+    },
+    "express_station_user_001": {
+      "model": "station_user",
+      "properties": {
+        "userLogin": "zhangsan",
+        "userName": "张三",
+        "station": "express_station_001",
+        "status": "enabled",
+        "remark": "华师驿站 店长（演示数据隔离）"
+      }
+    },
+    "express_station_user_002": {
+      "model": "station_user",
+      "properties": {
+        "userLogin": "lisi",
+        "userName": "李四",
+        "station": "express_station_002",
+        "status": "enabled",
+        "remark": "大学城驿站 店长（演示数据隔离）"
+      }
     }
   }
 }

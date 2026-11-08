@@ -127,13 +127,83 @@ public class Parcel extends BaseModel<Parcel> {
         return v == null ? null : String.valueOf(v);
     }
 
+    // ===================== 数据隔离 =====================
+
+    /**
+     * 当前登录账号绑定的驿站（enabled）。
+     * 返回空列表表示「不限制」——管理员/未绑定驿站的人员看全部。
+     */
+    private List<String> myStationIds() {
+        return new StationUser().myStationIds();
+    }
+
+    /** 行级隔离条件：绑定了驿站的人只看到自己驿站的包裹 */
+    private Filter scopeFilter() {
+        List<String> ids = myStationIds();
+        if (ids.isEmpty()) {
+            return null;
+        }
+        return Filter.in("station", ids);
+    }
+
+    private Filter mergeScope(Filter filter) {
+        Filter scope = scopeFilter();
+        if (scope == null) {
+            return filter;
+        }
+        return filter == null ? scope : filter.and(scope);
+    }
+
+    /** 越权校验：不能读写的别人驿站的包裹 */
+    private void assertInScope(Parcel p) {
+        List<String> ids = myStationIds();
+        if (ids.isEmpty() || p == null) {
+            return;
+        }
+        String sid = p.getStationId();
+        if (sid == null || !ids.contains(sid)) {
+            throw new RuntimeException("无权操作驿站[" + sid + "]的包裹 " + p.getParcelNo());
+        }
+    }
+
+    /** 查询包裹（行级隔离：只返回当前账号可见驿站的包裹） */
+    @MethodService(name = "search", auth = "search", description = "查询包裹（按驿站隔离）")
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> search(RecordSet rs, Filter filter, List<String> properties,
+                                            Integer limit, Integer offset, String order) {
+        return (List<Map<String, Object>>) rs.callSuper(Parcel.class, "search",
+                mergeScope(filter), properties, limit, offset, order);
+    }
+
+    /** 统计包裹（与 search 保持同一隔离范围，否则分页数字会对不上） */
+    @MethodService(name = "count", auth = "count", description = "统计包裹数量（按驿站隔离）")
+    public long count(RecordSet rs, Filter filter) {
+        return (Long) rs.callSuper(Parcel.class, "count", mergeScope(filter));
+    }
+
     // ===================== 服务 =====================
 
     /** 入库：生成包裹编号、置为在库、记录入库时间 */
     @MethodService(name = "create", auth = "create", description = "包裹入库登记")
     public RecordSet create(RecordSet rs, List<Map<String, Object>> valuesList) {
         Date now = new Date();
+        List<String> myStations = myStationIds();
         for (Map<String, Object> item : valuesList) {
+            // 数据隔离：绑定了一个驿站的人，入库时默认落到自己的驿站；多驿站/管理员必须显式选择
+            Object stationObj = item.get("station");
+            String stationVal = refId(stationObj);
+            if ((stationVal == null || stationVal.isEmpty()) && myStations.size() == 1) {
+                item.put("station", myStations.get(0));
+                stationVal = myStations.get(0);
+            }
+            if (!myStations.isEmpty()) {
+                if (stationVal == null || stationVal.isEmpty()) {
+                    throw new RuntimeException("请选择入库驿站（当前账号绑定了多个驿站）");
+                }
+                if (!myStations.contains(stationVal)) {
+                    throw new RuntimeException("无权向驿站[" + stationVal + "]入库，只能操作自己绑定的驿站");
+                }
+            }
             if (item.get("parcelNo") == null || String.valueOf(item.get("parcelNo")).isEmpty()) {
                 item.put("parcelNo", nextParcelNo());
             }
@@ -159,6 +229,8 @@ public class Parcel extends BaseModel<Parcel> {
             if (p == null) {
                 continue;
             }
+            assertInScope(p);
+            assertInScope(p);
             if (!"IN_STOCK".equals(p.getStatus())) {
                 throw new RuntimeException("包裹[" + p.getParcelNo() + "]当前状态为 " + p.getStatus() + "，只有「在库」的包裹可以上架");
             }
@@ -200,6 +272,7 @@ public class Parcel extends BaseModel<Parcel> {
         List<Parcel> active = search(activeFilter, Collections.singletonList("*"), 0, 0, null);
         if (active != null && !active.isEmpty()) {
             Parcel p = active.get(0);
+            assertInScope(p);
             releaseShelf(p);
             p.setStatus("PICKED");
             p.setOutboundTime(new Date());
@@ -218,7 +291,7 @@ public class Parcel extends BaseModel<Parcel> {
         List<Parcel> any = search(Filter.equal("pickupCode", c),
                 Collections.singletonList("*"), 0, 0, null);
         if (any == null || any.isEmpty()) {
-            throw new RuntimeException("取件码不存在：" + c);
+            throw new RuntimeException("取件码不存在或不属于你所在驿站：" + c);
         }
         Parcel p = any.get(0);
         String st = p.getStatus();
@@ -242,6 +315,7 @@ public class Parcel extends BaseModel<Parcel> {
             if (p == null) {
                 continue;
             }
+            assertInScope(p);
             pickup(p.getPickupCode());
         }
         return JsonRpcServiceResponse.reloadWindow();
@@ -265,6 +339,7 @@ public class Parcel extends BaseModel<Parcel> {
             if (p == null) {
                 continue;
             }
+            assertInScope(p);
             String st = p.getStatus();
             if ("PICKED".equals(st)) {
                 throw new RuntimeException("包裹[" + p.getParcelNo() + "]已取件，不能退货");
@@ -293,6 +368,7 @@ public class Parcel extends BaseModel<Parcel> {
             if (p == null) {
                 continue;
             }
+            assertInScope(p);
             if (!"ON_SHELF".equals(p.getStatus()) && !"OVERDUE".equals(p.getStatus())) {
                 throw new RuntimeException("只有「已上架 / 超期」的包裹才能重新生成取件码");
             }

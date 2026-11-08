@@ -1,0 +1,106 @@
+{
+  "views": {
+    "station_user_grid": {
+      "mode": "primary",
+      "name": "station-user-表格",
+      "model": "station_user",
+      "type": "grid",
+      "body": {
+        "buttons": [
+          {
+            "auth": "update",
+            "name": "编辑",
+            "action": "edit"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "登录账号",
+            "name": "userLogin"
+          },
+          {
+            "displayName": "姓名",
+            "name": "userName"
+          },
+          {
+            "displayName": "所属驿站",
+            "name": "station"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          },
+          {
+            "displayName": "备注",
+            "name": "remark"
+          }
+        ],
+        "tbar": [
+          {
+            "auth": "create",
+            "name": "新增",
+            "action": "create"
+          },
+          {
+            "auth": "delete",
+            "name": "删除",
+            "action": "delete"
+          }
+        ],
+        "type": "grid"
+      }
+    },
+    "station_user_search": {
+      "name": "station-user-搜索",
+      "model": "station_user",
+      "type": "search",
+      "body": {
+        "columns": [
+          {
+            "displayName": "登录账号",
+            "name": "userLogin"
+          },
+          {
+            "displayName": "姓名",
+            "name": "userName"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ],
+        "type": "search"
+      }
+    },
+    "station_user_form": {
+      "name": "station-user-表单",
+      "model": "station_user",
+      "type": "form",
+      "body": {
+        "columns": [
+          {
+            "displayName": "登录账号",
+            "name": "userLogin"
+          },
+          {
+            "displayName": "姓名",
+            "name": "userName"
+          },
+          {
+            "displayName": "所属驿站",
+            "name": "station"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          },
+          {
+            "displayName": "备注",
+            "name": "remark"
+          }
+        ],
+        "type": "form"
+      }
+    }
+  }
+}

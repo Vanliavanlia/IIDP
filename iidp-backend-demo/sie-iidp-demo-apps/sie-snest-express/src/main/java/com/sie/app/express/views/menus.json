@@ -49,6 +49,17 @@
       "parent_ids": {
         "@ref": "express_root_menu"
       }
+    },
+    "station_user_menu": {
+      "name": "station_user_menu",
+      "display_name": "驿站人员",
+      "model": "station_user",
+      "view": "station_user_grid,station_user_search,station_user_form",
+      "sequence": 5,
+      "active": true,
+      "parent_ids": {
+        "@ref": "express_root_menu"
+      }
     }
   }
 }

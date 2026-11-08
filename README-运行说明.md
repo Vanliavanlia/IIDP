@@ -181,3 +181,89 @@ IN_STOCK / ON_SHELF / OVERDUE --> RETURNED 已退货
 
 - 课程截止 **2026-11-29**，需交付：演示视频、汇报 PPT、项目开发文档（需求分析/可行性/概要设计/详细设计/实现/分工）、项目开发过程文档（问题清单 + 每个问题 ≥3 次交流截图）、源代码。
 - 开发文档里的图可以基于本 README 的模型表 + 状态机画用例图/类图/时序图。
+
+## 10. 数据隔离（按驿站行级隔离）
+
+### 10.1 设计取舍
+
+引擎自带的 SG（Scope Group）数据作用域需要 SaaS 管理端把「维度 / 作用域 / 规则 / 角色-作用域 / 用户实例」四张表配好（见 `docs/vendor/sie-snest-engine/reference/data-scope.md`），本地 demo 没有这套管理界面。因此本 APP 在**模型服务层**实现了语义等价的按驿站行级隔离：
+
+| 官方 SG | 本 APP 的等价实现 |
+| --- | --- |
+| 维度 = 取值模型 + 字段 | `ex_station_user`（登录账号 ↔ 驿站） |
+| 用户实例 `tenant_user_instance` | `ex_station_user` 的一行 |
+| 规则注入到 search 的 filter | 重写 `parcel.search/count`，把 `station in (我的驿站)` 并入 filter |
+| 空实例 = 该条件被移除（不过滤） | 没有绑定记录的账号（管理员）不过滤 |
+| superuser / implementer 源头短路 | 同上，管理员天然不受限 |
+
+好处：不需要额外配置、可测试、可演示；代价：隔离规则写死在服务里，换维度要改代码。要切回官方 SG，按 `data-scope.md` 建四张表并给角色授权即可，本节的代码可以保留（两者叠加时以更严格的为准）。
+
+### 10.2 模型：驿站人员（ex_station_user）
+
+| 字段 | 说明 |
+| --- | --- |
+| userLogin | 登录账号，唯一、作为下拉显示值 |
+| userName | 姓名（兜底匹配用，见 10.4） |
+| station | 所属驿站（多对一 → `ex_station`） |
+| status | enabled / disabled，只有 enabled 的绑定生效 |
+| remark | 备注 |
+
+种子数据（`data/express-seed.json`）：
+
+| id | 账号 | 姓名 | 驿站 |
+| --- | --- | --- | --- |
+| express_station_user_001 | zhangsan | 张三 | 华师驿站（ST-001） |
+| express_station_user_002 | lisi | 李四 | 大学城驿站（ST-002） |
+
+### 10.3 服务与改造点
+
+- `station_user.myStationIds()`：返回当前账号绑定的驿站 id 列表（只取 enabled）。
+- `station_user.myScope()`：页面上的「我的数据范围」按钮，显示绑定了哪些驿站。
+- `parcel.search` / `parcel.count` 重写：`mergeScope(filter)` 把 `Filter.in("station", ids)` 与原 filter 做 AND；无绑定时原样返回。
+- `parcel.create`：绑定 1 个驿站时自动填 `station`；绑定多个或 0 个且没选驿站时报错；选了非本驿站报「无权向驿站[...]入库」。
+- `autoShelf` / `pickup` / `returnOut` / `reissue` / `markOverdue`：操作前 `assertInScope(...)`，越权报「无权操作驿站[...]的包裹 ...」。
+- `pickup` 查不到时提示改为「取件码不存在或不属于你所在驿站：<code>」。
+
+### 10.4 一个坑：普通用户查不到 `rbac_user`
+
+隔离逻辑要拿「当前登录账号的 login」，最初写成查 `rbac_user`：
+
+```java
+List<Map<String, Object>> users = getMeta().get("rbac_user")
+        .search(Filter.equal("id", userId), Collections.singletonList("*"), 0, 1, null);
+```
+
+结果对普通用户（zhangsan）返回 **0 行**（`rbac_user` 自带数据权限/组织过滤，且 zhangsan 的 `org_id` 为空），导致取不到 login、隔离静默失效。改成：
+
+1. `getMeta().getUser()`（当前用户对象）里取 `login`；
+2. 取不到再回退查 `rbac_user`；
+3. 最后用 `getMeta().getUserName()`（返回的是**显示名**，如「张三」）按 `userName` 兜底匹配。
+
+也就是说 `station_user` 同时存 `userLogin` 和 `userName`，匹配时二者取并集，任一命中即可。
+
+### 10.5 演示步骤
+
+1. 用 `implementer / Implementer_2023` 登录 → 能看到全部 9 个包裹。
+2. 退出，用 `zhangsan / Zhang_2026` 登录 → 只看得到 5 个（华师驿站），菜单里多了「驿站人员」。
+3. 用 `lisi / Li_2026` 登录 → 只看得到 4 个（大学城驿站）。
+4. 用 zhangsan 去取 lisi 驿站的在架包裹 → 报「无权操作驿站[express_station_002]的包裹 PK000009」。
+5. 用 zhangsan 往 station_002 入库 → 报「无权向驿站[express_station_002]入库，只能操作自己绑定的驿站」。
+
+### 10.6 实测结果
+
+| 账号 | 角色 | 可见包裹数 | 说明 |
+| --- | --- | --- | --- |
+| implementer | 平台租户管理员 | 9 | 未绑定驿站 → 不过滤 |
+| zhangsan | 平台租户管理员（绑定 ST-001） | 5 | 只有华师驿站 |
+| lisi | 平台租户管理员（绑定 ST-002） | 4 | 只有大学城驿站 |
+
+越权用例：跨驿站入库被拒、跨驿站取件被拒（错误码 504，message 见上）。
+
+### 10.7 演示账号
+
+| 账号 | 密码 | 绑定驿站 |
+| --- | --- | --- |
+| zhangsan | Zhang_2026 | 华师驿站（ST-001） |
+| lisi | Li_2026 | 大学城驿站（ST-002） |
+
+两个账号都绑定了 `rbac_role_implementer_admin`（否则登录会报「请联系系统管理员进行角色绑定」）。

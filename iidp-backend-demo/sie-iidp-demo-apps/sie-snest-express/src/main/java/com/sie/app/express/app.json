@@ -19,7 +19,8 @@
     "station-view.json",
     "shelf-view.json",
     "parcel-view.json",
-    "parcel-log-view.json"
+    "parcel-log-view.json",
+    "station-user-view.json"
   ],
   "data": [
     "data/express-seed.json"
