@@ -1,0 +1,112 @@
+{
+  "views": {
+    "parcel_log_grid": {
+      "mode": "primary",
+      "name": "parcel_log-表格",
+      "model": "parcel_log",
+      "type": "grid",
+      "body": {
+        "buttons": [
+          {
+            "auth": "read",
+            "name": "详情",
+            "action": "preview"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "包裹",
+            "name": "parcel",
+            "width": "240px"
+          },
+          {
+            "displayName": "动作",
+            "name": "action",
+            "width": "120px"
+          },
+          {
+            "displayName": "取件码",
+            "name": "code",
+            "width": "120px"
+          },
+          {
+            "displayName": "操作人",
+            "name": "operatorName",
+            "width": "130px"
+          },
+          {
+            "displayName": "发生时间",
+            "name": "happenTime",
+            "width": "180px",
+            "sortable": true
+          },
+          {
+            "displayName": "说明",
+            "name": "remark"
+          }
+        ],
+        "tbar": [],
+        "type": "grid"
+      }
+    },
+    "parcel_log_search": {
+      "mode": "primary",
+      "name": "parcel_log-搜索",
+      "model": "parcel_log",
+      "type": "search",
+      "body": {
+        "columns": [
+          {
+            "displayName": "取件码",
+            "name": "code"
+          },
+          {
+            "displayName": "动作",
+            "name": "action"
+          },
+          {
+            "displayName": "操作人",
+            "name": "operatorName"
+          }
+        ],
+        "type": "search"
+      }
+    },
+    "parcel_log_form": {
+      "mode": "primary",
+      "name": "parcel_log-表单",
+      "model": "parcel_log",
+      "type": "form",
+      "body": {
+        "columns": [
+          {
+            "displayName": "包裹",
+            "name": "parcel"
+          },
+          {
+            "displayName": "动作",
+            "name": "action"
+          },
+          {
+            "displayName": "取件码",
+            "name": "code"
+          },
+          {
+            "displayName": "操作人",
+            "name": "operatorName"
+          },
+          {
+            "displayName": "发生时间",
+            "name": "happenTime"
+          },
+          {
+            "displayName": "说明",
+            "name": "remark"
+          }
+        ],
+        "tabs": [],
+        "type": "form"
+      }
+    }
+  }
+}

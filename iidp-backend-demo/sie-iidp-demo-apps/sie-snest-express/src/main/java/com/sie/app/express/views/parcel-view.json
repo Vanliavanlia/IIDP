@@ -1,0 +1,201 @@
+{
+  "views": {
+    "parcel_grid": {
+      "mode": "primary",
+      "name": "parcel-表格",
+      "model": "parcel",
+      "type": "grid",
+      "body": {
+        "buttons": [
+          {
+            "auth": "read",
+            "name": "详情",
+            "action": "preview"
+          },
+          {
+            "auth": "update",
+            "name": "编辑",
+            "action": "edit"
+          },
+          {
+            "auth": "autoShelf",
+            "name": "自动上架",
+            "model": "parcel",
+            "service": "autoShelf"
+          },
+          {
+            "auth": "pickupByIds",
+            "name": "取件",
+            "model": "parcel",
+            "service": "pickupByIds"
+          },
+          {
+            "auth": "reissue",
+            "name": "重新生成取件码",
+            "model": "parcel",
+            "service": "reissue"
+          },
+          {
+            "auth": "returnOut",
+            "name": "退货出库",
+            "model": "parcel",
+            "service": "returnOut"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "包裹编号",
+            "name": "parcelNo",
+            "width": "150px",
+            "sortable": true
+          },
+          {
+            "displayName": "运单号",
+            "name": "waybillNo",
+            "width": "150px",
+            "sortable": true
+          },
+          {
+            "displayName": "收件人",
+            "name": "receiverName",
+            "width": "110px"
+          },
+          {
+            "displayName": "手机尾号",
+            "name": "phoneTail",
+            "width": "90px"
+          },
+          {
+            "displayName": "快递公司",
+            "name": "courier",
+            "width": "110px"
+          },
+          {
+            "displayName": "驿站",
+            "name": "station",
+            "width": "170px"
+          },
+          {
+            "displayName": "货架",
+            "name": "shelf",
+            "width": "110px"
+          },
+          {
+            "displayName": "取件码",
+            "name": "pickupCode",
+            "width": "110px",
+            "sortable": true
+          },
+          {
+            "displayName": "状态",
+            "name": "status",
+            "width": "110px"
+          },
+          {
+            "displayName": "上架时间",
+            "name": "onShelfTime",
+            "width": "160px"
+          }
+        ],
+        "tbar": [
+          {
+            "auth": "create",
+            "name": "入库登记",
+            "action": "create"
+          },
+          {
+            "auth": "delete",
+            "name": "删除",
+            "action": "delete"
+          },
+          {
+            "auth": "markOverdueNow",
+            "name": "标记超期",
+            "model": "parcel",
+            "service": "markOverdueNow"
+          }
+        ],
+        "type": "grid"
+      }
+    },
+    "parcel_search": {
+      "mode": "primary",
+      "name": "parcel-搜索",
+      "model": "parcel",
+      "type": "search",
+      "body": {
+        "columns": [
+          {
+            "displayName": "取件码",
+            "name": "pickupCode"
+          },
+          {
+            "displayName": "运单号",
+            "name": "waybillNo"
+          },
+          {
+            "displayName": "收件人",
+            "name": "receiverName"
+          },
+          {
+            "displayName": "手机尾号",
+            "name": "phoneTail"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ],
+        "type": "search"
+      }
+    },
+    "parcel_form": {
+      "mode": "primary",
+      "name": "parcel-表单",
+      "model": "parcel",
+      "type": "form",
+      "body": {
+        "columns": [
+          {
+            "displayName": "运单号",
+            "name": "waybillNo"
+          },
+          {
+            "displayName": "收件人",
+            "name": "receiverName"
+          },
+          {
+            "displayName": "手机号",
+            "name": "receiverPhone"
+          },
+          {
+            "displayName": "快递公司",
+            "name": "courier"
+          },
+          {
+            "displayName": "驿站",
+            "name": "station"
+          },
+          {
+            "displayName": "货架",
+            "name": "shelf"
+          },
+          {
+            "displayName": "取件码",
+            "name": "pickupCode"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          },
+          {
+            "displayName": "备注",
+            "name": "remark"
+          }
+        ],
+        "tabs": [],
+        "type": "form"
+      }
+    }
+  }
+}

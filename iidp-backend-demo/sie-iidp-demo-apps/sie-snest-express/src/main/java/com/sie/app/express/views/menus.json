@@ -1,0 +1,54 @@
+{
+  "menus": {
+    "express_root_menu": {
+      "name": "express_root_menu",
+      "display_name": "快递驿站",
+      "active": true,
+      "sequence": 4
+    },
+    "parcel_menu": {
+      "name": "parcel_menu",
+      "display_name": "包裹管理",
+      "model": "parcel",
+      "view": "parcel_grid,parcel_search,parcel_form",
+      "sequence": 1,
+      "active": true,
+      "parent_ids": {
+        "@ref": "express_root_menu"
+      }
+    },
+    "shelf_menu": {
+      "name": "shelf_menu",
+      "display_name": "货架管理",
+      "model": "shelf",
+      "view": "shelf_grid,shelf_search,shelf_form",
+      "sequence": 2,
+      "active": true,
+      "parent_ids": {
+        "@ref": "express_root_menu"
+      }
+    },
+    "station_menu": {
+      "name": "station_menu",
+      "display_name": "驿站管理",
+      "model": "station",
+      "view": "station_grid,station_search,station_form",
+      "sequence": 3,
+      "active": true,
+      "parent_ids": {
+        "@ref": "express_root_menu"
+      }
+    },
+    "parcel_log_menu": {
+      "name": "parcel_log_menu",
+      "display_name": "操作记录",
+      "model": "parcel_log",
+      "view": "parcel_log_grid,parcel_log_search,parcel_log_form",
+      "sequence": 4,
+      "active": true,
+      "parent_ids": {
+        "@ref": "express_root_menu"
+      }
+    }
+  }
+}

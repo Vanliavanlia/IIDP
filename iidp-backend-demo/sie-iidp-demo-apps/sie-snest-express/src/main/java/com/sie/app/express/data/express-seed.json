@@ -1,0 +1,120 @@
+{
+  "data": {
+    "express_station_001": {
+      "model": "station",
+      "properties": {
+        "name": "华师驿站（菜鸟）",
+        "code": "ST-001",
+        "address": "华南师范大学西门 1 号铺",
+        "phone": "020-88880001",
+        "manager": "李站长",
+        "status": "ENABLED"
+      }
+    },
+    "express_station_002": {
+      "model": "station",
+      "properties": {
+        "name": "大学城驿站（丰巢）",
+        "code": "ST-002",
+        "address": "大学城北区 8 栋 101",
+        "phone": "020-88880002",
+        "manager": "王站长",
+        "status": "ENABLED"
+      }
+    },
+    "express_shelf_001": {
+      "model": "shelf",
+      "properties": {
+        "code": "A-01",
+        "area": "A 区靠门",
+        "capacity": 20,
+        "used": 0,
+        "status": "FREE",
+        "station": "express_station_001"
+      }
+    },
+    "express_shelf_002": {
+      "model": "shelf",
+      "properties": {
+        "code": "A-02",
+        "area": "A 区",
+        "capacity": 20,
+        "used": 0,
+        "status": "FREE",
+        "station": "express_station_001"
+      }
+    },
+    "express_shelf_003": {
+      "model": "shelf",
+      "properties": {
+        "code": "B-01",
+        "area": "B 区大件",
+        "capacity": 10,
+        "used": 0,
+        "status": "FREE",
+        "station": "express_station_001"
+      }
+    },
+    "express_shelf_004": {
+      "model": "shelf",
+      "properties": {
+        "code": "C-01",
+        "area": "C 区靠门",
+        "capacity": 20,
+        "used": 0,
+        "status": "FREE",
+        "station": "express_station_002"
+      }
+    },
+    "express_shelf_005": {
+      "model": "shelf",
+      "properties": {
+        "code": "C-02",
+        "area": "C 区",
+        "capacity": 20,
+        "used": 0,
+        "status": "FREE",
+        "station": "express_station_002"
+      }
+    },
+    "express_shelf_006": {
+      "model": "shelf",
+      "properties": {
+        "code": "D-01",
+        "area": "D 区大件",
+        "capacity": 10,
+        "used": 0,
+        "status": "FREE",
+        "station": "express_station_002"
+      }
+    },
+    "express_barcode_rule_parcel": {
+      "model": "barcode_rule",
+      "properties": {
+        "code": "parcel",
+        "prefix": "PK",
+        "length": 6
+      }
+    },
+    "express_role_auth_001": {
+      "model": "rbac_role_auth",
+      "properties": {
+        "role": "rbac_role_implementer_admin",
+        "appName": "express",
+        "appTag": "master",
+        "appAll": "1",
+        "tenantId": "rbac_tenant_root"
+      }
+    },
+    "express_role_auth_002": {
+      "model": "rbac_role_auth",
+      "properties": {
+        "role": "rbac_role_admin",
+        "appName": "express",
+        "appTag": "master",
+        "appAll": "1",
+        "tenantId": "rbac_tenant_root"
+      }
+    }
+  }
+}

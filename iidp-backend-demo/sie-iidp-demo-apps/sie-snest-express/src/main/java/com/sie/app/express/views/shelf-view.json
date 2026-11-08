@@ -1,0 +1,129 @@
+{
+  "views": {
+    "shelf_grid": {
+      "mode": "primary",
+      "name": "shelf-表格",
+      "model": "shelf",
+      "type": "grid",
+      "body": {
+        "buttons": [
+          {
+            "auth": "read",
+            "name": "详情",
+            "action": "preview"
+          },
+          {
+            "auth": "update",
+            "name": "编辑",
+            "action": "edit"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "货架编号",
+            "name": "code",
+            "width": "140px",
+            "sortable": true
+          },
+          {
+            "displayName": "驿站",
+            "name": "station",
+            "width": "200px"
+          },
+          {
+            "displayName": "区域",
+            "name": "area",
+            "width": "120px"
+          },
+          {
+            "displayName": "容量",
+            "name": "capacity",
+            "width": "90px"
+          },
+          {
+            "displayName": "已用",
+            "name": "used",
+            "width": "90px"
+          },
+          {
+            "displayName": "状态",
+            "name": "status",
+            "width": "100px"
+          }
+        ],
+        "tbar": [
+          {
+            "auth": "create",
+            "name": "新增",
+            "action": "create"
+          },
+          {
+            "auth": "delete",
+            "name": "删除",
+            "action": "delete"
+          }
+        ],
+        "type": "grid"
+      }
+    },
+    "shelf_search": {
+      "mode": "primary",
+      "name": "shelf-搜索",
+      "model": "shelf",
+      "type": "search",
+      "body": {
+        "columns": [
+          {
+            "displayName": "货架编号",
+            "name": "code"
+          },
+          {
+            "displayName": "驿站",
+            "name": "station"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ],
+        "type": "search"
+      }
+    },
+    "shelf_form": {
+      "mode": "primary",
+      "name": "shelf-表单",
+      "model": "shelf",
+      "type": "form",
+      "body": {
+        "columns": [
+          {
+            "displayName": "货架编号",
+            "name": "code"
+          },
+          {
+            "displayName": "驿站",
+            "name": "station"
+          },
+          {
+            "displayName": "区域",
+            "name": "area"
+          },
+          {
+            "displayName": "容量",
+            "name": "capacity"
+          },
+          {
+            "displayName": "已用",
+            "name": "used"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ],
+        "tabs": [],
+        "type": "form"
+      }
+    }
+  }
+}

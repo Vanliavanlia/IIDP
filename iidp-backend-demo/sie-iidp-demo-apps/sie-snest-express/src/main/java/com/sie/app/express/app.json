@@ -1,0 +1,27 @@
+{
+  "name": "express",
+  "displayName": "快递驿站-APP",
+  "author": "student",
+  "company": "sie",
+  "category": "EXPRESS",
+  "product": "EXPRESS",
+  "description": "快递驿站管理平台：入库、上架、取件码、取件、退货",
+  "summary": "快递驿站管理",
+  "type": "SDK",
+  "tag": "master",
+  "version": "0.0.1",
+  "resolved": "com.sie.app.express",
+  "dependencies": ["code"],
+  "application": true,
+  "icon": null,
+  "license": "LGPL 3.0",
+  "view": [
+    "station-view.json",
+    "shelf-view.json",
+    "parcel-view.json",
+    "parcel-log-view.json"
+  ],
+  "data": [
+    "data/express-seed.json"
+  ]
+}

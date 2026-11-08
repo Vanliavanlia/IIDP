@@ -13,6 +13,7 @@
 
     <modules>
         <module>sie-snest-code</module>
+        <module>sie-snest-express</module>
     </modules>
 
     <dependencies>
