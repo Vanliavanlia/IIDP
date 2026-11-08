@@ -1,0 +1,306 @@
+{
+  "views": {
+    "process_step_grid": {
+      "mode": "primary",
+      "name": "工序-表格",
+      "model": "process_step",
+      "type": "grid",
+      "body": {
+        "type": "grid",
+        "buttons": [
+          {
+            "name": "详情",
+            "action": "preview",
+            "auth": "read"
+          },
+          {
+            "name": "编辑",
+            "action": "edit",
+            "auth": "update"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "名称",
+            "name": "name"
+          },
+          {
+            "displayName": "工序编码",
+            "name": "code",
+            "sortable": true,
+            "width": "100px"
+          },
+          {
+            "displayName": "工序序号",
+            "name": "sequence"
+          },
+          {
+            "displayName": "工序类型",
+            "name": "stepType"
+          },
+          {
+            "displayName": "标准工时",
+            "name": "standardHours"
+          },
+          {
+            "displayName": "是否关键工序",
+            "name": "keyStep"
+          },
+          {
+            "displayName": "是否质量门",
+            "name": "qualityGate"
+          },
+          {
+            "displayName": "所属工艺",
+            "name": "process"
+          }
+        ],
+        "tbar": [
+          {
+            "name": "新增",
+            "action": "create",
+            "auth": "create"
+          },
+          {
+            "name": "删除",
+            "action": "delete",
+            "auth": "delete"
+          }
+        ]
+      }
+    },
+    "process_step_search": {
+      "mode": "primary",
+      "name": "工序-搜索",
+      "model": "process_step",
+      "type": "search",
+      "body": {
+        "type": "search",
+        "columns": [
+          {
+            "displayName": "名称",
+            "name": "name"
+          },
+          {
+            "displayName": "工序编码",
+            "name": "code"
+          },
+          {
+            "displayName": "工序类型",
+            "name": "stepType"
+          },
+          {
+            "displayName": "所属工艺",
+            "name": "process"
+          }
+        ]
+      }
+    },
+    "process_step_form": {
+      "mode": "primary",
+      "name": "工序-表单",
+      "model": "process_step",
+      "type": "form",
+      "body": {
+        "type": "form",
+        "columns": [
+          {
+            "displayName": "工序编码",
+            "name": "code"
+          },
+          {
+            "displayName": "名称",
+            "name": "name",
+            "required": true
+          },
+          {
+            "displayName": "工序序号",
+            "name": "sequence"
+          },
+          {
+            "displayName": "工序类型",
+            "name": "stepType"
+          },
+          {
+            "displayName": "标准工时",
+            "name": "standardHours"
+          },
+          {
+            "displayName": "是否关键工序",
+            "name": "keyStep"
+          },
+          {
+            "displayName": "是否质量门",
+            "name": "qualityGate"
+          },
+          {
+            "displayName": "所属工艺",
+            "name": "process"
+          }
+        ],
+        "tabs": [
+          {
+            "header": "工序参数",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "parameterList",
+              "columns": [
+                {
+                  "displayName": "参数名",
+                  "name": "name"
+                },
+                {
+                  "displayName": "标准值",
+                  "name": "standardValue"
+                },
+                {
+                  "displayName": "单位",
+                  "name": "unit"
+                },
+                {
+                  "displayName": "下限",
+                  "name": "lowerLimit"
+                },
+                {
+                  "displayName": "上限",
+                  "name": "upperLimit"
+                }
+              ]
+            }
+          },
+          {
+            "header": "检验计划",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "inspectionPlanList",
+              "columns": [
+                {
+                  "displayName": "检验项",
+                  "name": "inspectionItem"
+                },
+                {
+                  "displayName": "抽样规则",
+                  "name": "samplingRule"
+                },
+                {
+                  "displayName": "判定标准",
+                  "name": "judgmentStandard"
+                },
+                {
+                  "displayName": "是否必检",
+                  "name": "mandatory"
+                }
+              ]
+            }
+          },
+          {
+            "header": "工单工序任务",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "workOrderStepList",
+              "columns": [
+                {
+                  "displayName": "所属工单",
+                  "name": "workOrder"
+                },
+                {
+                  "displayName": "工序序号",
+                  "name": "sequence"
+                },
+                {
+                  "displayName": "计划数量",
+                  "name": "plannedQuantity"
+                },
+                {
+                  "displayName": "完成数量",
+                  "name": "completedQuantity"
+                },
+                {
+                  "displayName": "合格数量",
+                  "name": "qualifiedQuantity"
+                },
+                {
+                  "displayName": "状态",
+                  "name": "status"
+                }
+              ]
+            }
+          },
+          {
+            "header": "在制品",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "wipList",
+              "columns": [
+                {
+                  "displayName": "工单",
+                  "name": "workOrder"
+                },
+                {
+                  "displayName": "批次号",
+                  "name": "batchNo"
+                },
+                {
+                  "displayName": "在制数量",
+                  "name": "wipQuantity"
+                },
+                {
+                  "displayName": "状态",
+                  "name": "status"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

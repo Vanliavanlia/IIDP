@@ -1,0 +1,253 @@
+{
+  "views": {
+    "material_grid": {
+      "mode": "primary",
+      "name": "物料-表格",
+      "model": "material",
+      "type": "grid",
+      "body": {
+        "type": "grid",
+        "buttons": [
+          {
+            "name": "详情",
+            "action": "preview",
+            "auth": "read"
+          },
+          {
+            "name": "编辑",
+            "action": "edit",
+            "auth": "update"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "名称",
+            "name": "name"
+          },
+          {
+            "displayName": "物料编码",
+            "name": "code",
+            "sortable": true,
+            "width": "100px"
+          },
+          {
+            "displayName": "物料类型",
+            "name": "materialType"
+          },
+          {
+            "displayName": "规格",
+            "name": "spec"
+          },
+          {
+            "displayName": "单位",
+            "name": "unit"
+          },
+          {
+            "displayName": "安全库存",
+            "name": "safetyStock"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ],
+        "tbar": [
+          {
+            "name": "新增",
+            "action": "create",
+            "auth": "create"
+          },
+          {
+            "name": "删除",
+            "action": "delete",
+            "auth": "delete"
+          }
+        ]
+      }
+    },
+    "material_search": {
+      "mode": "primary",
+      "name": "物料-搜索",
+      "model": "material",
+      "type": "search",
+      "body": {
+        "type": "search",
+        "columns": [
+          {
+            "displayName": "名称",
+            "name": "name"
+          },
+          {
+            "displayName": "物料编码",
+            "name": "code"
+          },
+          {
+            "displayName": "物料类型",
+            "name": "materialType"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ]
+      }
+    },
+    "material_form": {
+      "mode": "primary",
+      "name": "物料-表单",
+      "model": "material",
+      "type": "form",
+      "body": {
+        "type": "form",
+        "columns": [
+          {
+            "displayName": "物料编码",
+            "name": "code"
+          },
+          {
+            "displayName": "名称",
+            "name": "name",
+            "required": true
+          },
+          {
+            "displayName": "物料类型",
+            "name": "materialType"
+          },
+          {
+            "displayName": "单位",
+            "name": "unit"
+          },
+          {
+            "displayName": "规格",
+            "name": "spec"
+          },
+          {
+            "displayName": "安全库存",
+            "name": "safetyStock"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ],
+        "tabs": [
+          {
+            "header": "产品BOM",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "productBomList",
+              "columns": [
+                {
+                  "displayName": "父产品",
+                  "name": "product"
+                },
+                {
+                  "displayName": "用量",
+                  "name": "amount"
+                },
+                {
+                  "displayName": "单位",
+                  "name": "unit"
+                },
+                {
+                  "displayName": "BOM版本",
+                  "name": "version"
+                }
+              ]
+            }
+          },
+          {
+            "header": "库存",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "inventoryList",
+              "columns": [
+                {
+                  "displayName": "批次号",
+                  "name": "batchNo"
+                },
+                {
+                  "displayName": "库位",
+                  "name": "location"
+                },
+                {
+                  "displayName": "数量",
+                  "name": "quantity"
+                },
+                {
+                  "displayName": "库存类型",
+                  "name": "inventoryType"
+                }
+              ]
+            }
+          },
+          {
+            "header": "领料记录",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "materialIssueList",
+              "columns": [
+                {
+                  "displayName": "工单",
+                  "name": "workOrder"
+                },
+                {
+                  "displayName": "批次号",
+                  "name": "batchNo"
+                },
+                {
+                  "displayName": "领用数量",
+                  "name": "issueQuantity"
+                },
+                {
+                  "displayName": "领料时间",
+                  "name": "issueTime"
+                },
+                {
+                  "displayName": "领料人",
+                  "name": "issuer"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -918,3 +918,163 @@ bin_shipment.create SH2026121001 / 顺丰物流 / SF8899001122 / 50 只 / 运输
 | 防水测试 | 工序 8 + `bin_test`（水压、时长、抽检数、渗漏点、结论） |
 | 打包装 | 工序 9 + `bin_packing`（纸箱/木箱/托盘、每箱数量、箱数、毛重） |
 | 发货 | 工序 10 + `bin_shipment`（发货单号、承运商、物流单号、收货人、物流状态） |
+
+---
+
+## 17. 第四天：多 APP 拆分架构（CMS / MES / QMS / WMS + 统一编码中心）
+
+第四天的做法是把原来塞在一个 APP 里的业务，按「谁负责什么」拆成 5 个 APP，互相之间用 `targetModel` 引用、用独立的 `code` APP 统一发号。
+
+### 17.1 为什么拆
+
+| 维度 | 单 APP（前三天） | 多 APP（第四天） |
+|---|---|---|
+| 业务边界 | 一个 `mes` 里既有客户、又有工单、又有质检 | 客户/销售单归 `cms`，生产归 `mes`，质检归 `qms`，库存归 `wms`，发号归 `code` |
+| 表前缀 | 混用 | 业务表统一 `mes_` 前缀，模型名不带前缀 |
+| 发号 | 每个 APP 各写一个 Generator | 全部走 `code` APP 的 `barcode_rule`，跨 APP `call` |
+| 授权 | 整包授权 | 按 APP 授权，租户可以只买其中几个 |
+| 部署 | 一个 jar | 5 个 jar，可单独升级 |
+
+### 17.2 五个 APP 与模型清单
+
+| 模块 | 包名 / app name | 模型（表名） |
+|---|---|---|
+| `sie-snest-code` | `com.sie.app.code` / `code` | `BarcodeRule`（`barcode_rule`）、`BarcodeRuleDetail`（`barcode_rule_detail`） |
+| `sie-snest-cms` | `com.sie.app.cms` / `cms` | `Customer`（`mes_customer`）、`LogoSpec`（`mes_logo_spec`）、`SalesOrder`（`mes_sales_order`）、`SalesOrderLine`（`mes_sales_order_line`） |
+| `sie-snest-mes` | `com.sie.app.mes` / `mes` | `Product`、`ProductBom`、`Process`、`ProcessStep`、`ProcessStepParameter`、`WorkOrder`、`WorkOrderStep`、`ProductionReport`、`Wip`、`Equipment`、`Employee`、`Team`、`Shift`（13 个，表全 `mes_*`） |
+| `sie-snest-qms` | `com.sie.app.qms` / `qms` | `InspectionPlan`、`InspectionRecord`、`DefectRecord`、`WaterproofTest` |
+| `sie-snest-wms` | `com.sie.iidp.wms` / `sie-snest-wms` | `Device`、`Inventory`、`Material`、`MaterialIssue` |
+
+> 注意：`sie-snest-wms` 的 app name 就是 `sie-snest-wms`（不是 `wms`），授权、`requiredApps`、菜单里都要用这个名字。这是培训方原包的写法，我们保持一致。
+
+### 17.3 跨 APP 关联怎么写
+
+跨 APP 不能 `import` 对方的模型类（ClassLoader 隔离），字段类型用 `Map<String, Object>`：
+
+```java
+// SalesOrder 里引用 cms 自己的 Customer —— 同 APP 正常引用
+// WorkOrder 里引用 cms 的客户 —— 跨 APP，必须用字符串
+@ManyToOne(targetModel = "customer", targetProperty = "id", displayName = "客户")
+@JoinColumn(name = "customer_id", referencedProperty = "id")
+private Map<String, Object> customer;
+
+// 反向：Customer 里挂销售订单列表
+@OneToMany(targetModel = "sales_order", targetProperty = "customer", displayName = "销售订单")
+private List<SalesOrder> salesOrderList;
+```
+
+- `targetModel` 写模型的 `name`（不是类名、不是表名）
+- `targetProperty` / `referencedProperty` 写对方用来关联的字段
+- 取外键值时用 `get("customer")` 拿到 Map 再取 `id`，框架生成的列名由 `@JoinColumn(name=...)` 决定
+
+### 17.4 统一编码中心（code APP）
+
+`code` APP 里只有两张表：规则表 + 明细表（记当前流水号）。`BarcodeRule.generateCode(String code)` 的流程是：查规则 → 查明细 → 没有就 `seq=1` 新建，有就 `seq+1` 并 `update()` → 返回 `prefix + 左补零(seq, length)`。
+
+内置 13 条规则（`data/barcode_rule.json` 种子，length 全 6）：
+
+| 业务 | code | 前缀 | 业务 | code | 前缀 |
+|---|---|---|---|---|---|
+| 客户 | `customer` | C | 销售订单 | `sales_order` | SO |
+| 产品 | `product` | P | 生产工单 | `work_order` | WO |
+| 物料 | `material` | M | 设备 | `device` | DV |
+| 工艺路线 | `process` | PC | 工序 | `process_step` | PS |
+| 员工 | `employee` | EMP | 班组 | `team` | TM |
+| 班次 | `shift` | SF | 设备(旧) | `equipment` | EQ |
+| 订单(旧) | `order` | ORD | | | |
+
+每个业务模型重写 `create` 自动发号：
+
+```java
+@MethodService
+public RecordSet create(List<Map<String, Object>> valuesList) {
+    for (Map<String, Object> map : valuesList) {
+        // 跨 APP 调用：app 名 + 服务名
+        map.put("code", getMeta().get("barcode_rule").call("generateCode", "customer"));
+    }
+    return (RecordSet) getMeta().get("customer").callSuper(Customer.class, "create", valuesList);
+}
+```
+
+实测（implementer，经 Nginx）：
+
+```text
+customer.create    {"name":"测试客户A","contact":"张三","phone":"13800000001"} → C000001
+customer.create    {"name":"测试客户B","contact":"李四","phone":"13800000002"} → C000002
+product.create     {"name":"不锈钢垃圾桶 240L","code":"P000001","specification":"240L"} → P000001（用传入 code）
+work_order.create  {"plannedQuantity":50} → WO000001（50 件，状态 CREATED，优先级 NORMAL）
+device.create      {"name":"激光切割机A"} → DV000001
+```
+
+`barcode_rule_detail` 里的流水号：`customer=2`、`product=1`、`work_order=1`、`device=1`。
+
+### 17.5 重建 / 换架构的步骤
+
+```powershell
+cd D:\Code\intermediate_software\iidp-backend-demo
+
+# 1) 备份当前库（换架构前必做）
+& "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqldump.exe" --host=127.0.0.1 --port=3307 `
+  --user=root --password=123456 --databases iidp_demo_v3 `
+  --result-file="D:\Code\intermediate_software\runtime\backup-before-day4.sql"
+
+# 2) 清库（排序规则必须 utf8mb4_bin）
+& "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" --host=127.0.0.1 --port=3307 `
+  --user=root --password=123456 -e "DROP DATABASE IF EXISTS iidp_demo_v3; CREATE DATABASE iidp_demo_v3 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;"
+
+# 3) 清 Redis 缓存
+& "D:\Code\intermediate_software\runtime\redis\redis-cli.exe" -p 6379 -n 5 flushdb
+
+# 4) 重新构建（离线仓库）
+mvn -B -o -s ..\settings-gu.xml "-Dmaven.repo.local=D:\Code\intermediate_software\offline-repo" clean package -DskipTests
+
+# 5) 启动整套（MySQL→Redis→MinIO→grant→后端→Nginx）
+cd D:\Code\intermediate_software
+.\start-all.ps1
+
+# 6) 首次启动必须执行一次平台视图补丁（5 个 -web 应用）
+& "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" --host=127.0.0.1 --port=3307 `
+  --user=root --password=123456 --database=iidp_demo_v3 `
+  -e "source D:/Code/intermediate_software/iidp-frontend-dist/sql/platform-web-app-init.sql"
+
+# 7) 补角色授权（见 17.6）
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\grant-day4-apps.ps1
+```
+
+启动成功的标志：日志里 `Started DemoServer in 2.8 seconds`，`SELECT COUNT(*) FROM meta_app` 为 **16**（11 个平台 APP + cms/code/mes/qms/sie-snest-wms），`SELECT COUNT(*) FROM barcode_rule` 为 **13**。
+
+### 17.6 租户授权与「菜单看不到」的排查
+
+新库里 `implementer` 只授了平台应用，必须先给租户授权业务 APP，否则登录后左侧只有平台菜单：
+
+```text
+rbac_tenant.listPermission  → 22 项（5 条产品线 CMS/MES/QMS/WMS/CODE + 17 个 APP）
+rbac_tenant.create          → 建「演示租户」，id 06cmsfves45uq，自动生成 admin_000001（id 06cmsfvj7xmir）
+rbac_tenant.grant           → {"id":"06cmsfves45uq","permissionIds":[22 个 id]}
+                            → 租户管理员角色 06cmsfvi3zann 得到 22 条 rbac_role_auth
+```
+
+但**平台角色**（`rbac_role_implementer_admin`、`rbac_role_admin`）还需要单独补 `rbac_role_auth`，iam 的种子只给了它们平台应用。这就是「`superuser` 登录后菜单是 0 条」「`implementer` 看不到业务 APP」的原因。补法：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\grant-day4-apps.ps1
+```
+
+脚本会登录 → 查已有授权 → 只补缺的 10 条（2 个角色 × 5 个 APP，`appAll=1`），可重复执行。
+
+补完后的实测：`implementer` 菜单 **80 条**、`admin_000001` 菜单 **74 条**，两者都能看到「客户管理 / 销售订单 / 生产工单 / 检验计划 / 库存管理 / 编码规则」等业务菜单。
+
+### 17.7 和原来那个 BIN（垃圾桶）系统什么关系
+
+- 原 `sie-snest-bin`（9 模型 + 10 道工序 + 工单状态机）**已整目录备份**到 `_extract\old-business-apps\sie-snest-bin\`（不在 git 里，因为 `_extract/` 被忽略），需要找回时直接从那儿复制。
+- 其中的业务思想已经并入新架构：工单 → `mes_work_order`，工序任务 → `mes_work_order_step`，报工 → `mes_production_report`，设备 → `sie-snest-wms.device`，物料 → `sie-snest-wms.material`，出厂检验 → `qms.waterproof_test` / `inspection_record`。
+- 当时 BIN 的「一键生成 10 道工序 + 进度百分比」服务，对应新架构里的 `work_order_step` 批量生成（培训方包里没写这个服务，需要时可照 `bin` 的 `plan()` 逻辑补一个 `WorkOrder.plan()`）。
+
+### 17.8 与培训方原包的差异
+
+| 项 | 培训方包 | 我们 | 原因 |
+|---|---|---|---|
+| `wms/OrderExt` | 有，`@Model(name="order", parent="order")` | **删除** | 包里已经没有 `order` 父模型，保留会启动报「父模型不存在」 |
+| 角色授权 | 无 | 增加 `scripts/grant-day4-apps.ps1` | 原样导入后两个平台角色看不到业务 APP，脚本可复现地补齐 |
+| 旧业务 APP | 无 | 备份到 `_extract\old-business-apps\` | 保留可回溯，但不进 git |
+| 库 | 未提 | 先 mysqldump 备份再清库 | 换架构会重建全部表，避免丢数据 |

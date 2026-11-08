@@ -1,0 +1,63 @@
+{
+  "menus": {
+    "qms_root_menu": {
+      "name": "qms_root_menu",
+      "display_name": "质量管理系统",
+      "active": true,
+      "sequence": 1
+    },
+    "qms_quality_group": {
+      "name": "qms_quality_group",
+      "display_name": "质量管理",
+      "active": true,
+      "sequence": 1,
+      "parent_ids": {
+        "@ref": "qms_root_menu"
+      }
+    },
+    "inspection_plan_menu": {
+      "name": "inspection_plan_menu",
+      "display_name": "检验计划",
+      "model": "inspection_plan",
+      "view": "inspection_plan_grid,inspection_plan_search,inspection_plan_form",
+      "active": true,
+      "sequence": 1,
+      "parent_ids": {
+        "@ref": "qms_quality_group"
+      }
+    },
+    "inspection_record_menu": {
+      "name": "inspection_record_menu",
+      "display_name": "检验记录",
+      "model": "inspection_record",
+      "view": "inspection_record_grid,inspection_record_search,inspection_record_form",
+      "active": true,
+      "sequence": 2,
+      "parent_ids": {
+        "@ref": "qms_quality_group"
+      }
+    },
+    "defect_record_menu": {
+      "name": "defect_record_menu",
+      "display_name": "不良记录",
+      "model": "defect_record",
+      "view": "defect_record_grid,defect_record_search,defect_record_form",
+      "active": true,
+      "sequence": 3,
+      "parent_ids": {
+        "@ref": "qms_quality_group"
+      }
+    },
+    "waterproof_test_menu": {
+      "name": "waterproof_test_menu",
+      "display_name": "防水测试",
+      "model": "waterproof_test",
+      "view": "waterproof_test_grid,waterproof_test_search,waterproof_test_form",
+      "active": true,
+      "sequence": 4,
+      "parent_ids": {
+        "@ref": "qms_quality_group"
+      }
+    }
+  }
+}

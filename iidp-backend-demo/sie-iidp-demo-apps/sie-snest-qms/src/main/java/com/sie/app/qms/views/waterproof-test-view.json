@@ -1,0 +1,152 @@
+{
+  "views": {
+    "waterproof_test_grid": {
+      "mode": "primary",
+      "name": "防水测试-表格",
+      "model": "waterproof_test",
+      "type": "grid",
+      "body": {
+        "type": "grid",
+        "buttons": [
+          {
+            "name": "详情",
+            "action": "preview",
+            "auth": "read"
+          },
+          {
+            "name": "编辑",
+            "action": "edit",
+            "auth": "update"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "测试批次",
+            "name": "testBatchNo"
+          },
+          {
+            "displayName": "结果",
+            "name": "result",
+            "width": "100px"
+          },
+          {
+            "displayName": "测试数量",
+            "name": "testQuantity"
+          },
+          {
+            "displayName": "渗漏数量",
+            "name": "leakageQuantity"
+          },
+          {
+            "displayName": "测试标准",
+            "name": "testStandard"
+          },
+          {
+            "displayName": "工单工序任务",
+            "name": "workOrderStep"
+          },
+          {
+            "displayName": "测试员",
+            "name": "tester"
+          },
+          {
+            "displayName": "测试时间",
+            "name": "testTime"
+          }
+        ],
+        "tbar": [
+          {
+            "name": "新增",
+            "action": "create",
+            "auth": "create"
+          },
+          {
+            "name": "删除",
+            "action": "delete",
+            "auth": "delete"
+          }
+        ]
+      }
+    },
+    "waterproof_test_search": {
+      "mode": "primary",
+      "name": "防水测试-搜索",
+      "model": "waterproof_test",
+      "type": "search",
+      "body": {
+        "type": "search",
+        "columns": [
+          {
+            "displayName": "测试批次",
+            "name": "testBatchNo"
+          },
+          {
+            "displayName": "结果",
+            "name": "result"
+          },
+          {
+            "displayName": "测试时间",
+            "name": "testTime",
+            "widget": "datetimerange"
+          },
+          {
+            "displayName": "工单工序任务",
+            "name": "workOrderStep"
+          },
+          {
+            "displayName": "测试员",
+            "name": "tester"
+          }
+        ]
+      }
+    },
+    "waterproof_test_form": {
+      "mode": "primary",
+      "name": "防水测试-表单",
+      "model": "waterproof_test",
+      "type": "form",
+      "body": {
+        "type": "form",
+        "columns": [
+          {
+            "displayName": "工单工序任务",
+            "name": "workOrderStep"
+          },
+          {
+            "displayName": "测试批次",
+            "name": "testBatchNo"
+          },
+          {
+            "displayName": "测试数量",
+            "name": "testQuantity"
+          },
+          {
+            "displayName": "测试标准",
+            "name": "testStandard"
+          },
+          {
+            "displayName": "结果",
+            "name": "result"
+          },
+          {
+            "displayName": "渗漏数量",
+            "name": "leakageQuantity"
+          },
+          {
+            "displayName": "测试员",
+            "name": "tester"
+          },
+          {
+            "displayName": "测试时间",
+            "name": "testTime"
+          },
+          {
+            "displayName": "备注",
+            "name": "remark"
+          }
+        ],
+        "tabs": []
+      }
+    }
+  }
+}

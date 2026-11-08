@@ -1,0 +1,294 @@
+{
+  "views": {
+    "employee_grid": {
+      "mode": "primary",
+      "name": "员工-表格",
+      "model": "employee",
+      "type": "grid",
+      "body": {
+        "type": "grid",
+        "buttons": [
+          {
+            "name": "详情",
+            "action": "preview",
+            "auth": "read"
+          },
+          {
+            "name": "编辑",
+            "action": "edit",
+            "auth": "update"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "姓名",
+            "name": "name"
+          },
+          {
+            "displayName": "工号",
+            "name": "employeeNo",
+            "sortable": true,
+            "width": "100px"
+          },
+          {
+            "displayName": "班组",
+            "name": "team"
+          },
+          {
+            "displayName": "技能",
+            "name": "skill"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ],
+        "tbar": [
+          {
+            "name": "新增",
+            "action": "create",
+            "auth": "create"
+          },
+          {
+            "name": "删除",
+            "action": "delete",
+            "auth": "delete"
+          }
+        ]
+      }
+    },
+    "employee_search": {
+      "mode": "primary",
+      "name": "员工-搜索",
+      "model": "employee",
+      "type": "search",
+      "body": {
+        "type": "search",
+        "columns": [
+          {
+            "displayName": "姓名",
+            "name": "name"
+          },
+          {
+            "displayName": "工号",
+            "name": "employeeNo"
+          },
+          {
+            "displayName": "班组",
+            "name": "team"
+          },
+          {
+            "displayName": "技能",
+            "name": "skill"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ]
+      }
+    },
+    "employee_form": {
+      "mode": "primary",
+      "name": "员工-表单",
+      "model": "employee",
+      "type": "form",
+      "body": {
+        "type": "form",
+        "columns": [
+          {
+            "displayName": "工号",
+            "name": "employeeNo"
+          },
+          {
+            "displayName": "姓名",
+            "name": "name",
+            "required": true
+          },
+          {
+            "displayName": "班组",
+            "name": "team"
+          },
+          {
+            "displayName": "技能",
+            "name": "skill"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ],
+        "tabs": [
+          {
+            "header": "报工记录",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "productionReportList",
+              "columns": [
+                {
+                  "displayName": "工单工序任务",
+                  "name": "workOrderStep"
+                },
+                {
+                  "displayName": "报工数量",
+                  "name": "reportQuantity"
+                },
+                {
+                  "displayName": "合格数量",
+                  "name": "qualifiedQuantity"
+                },
+                {
+                  "displayName": "不良数量",
+                  "name": "defectQuantity"
+                },
+                {
+                  "displayName": "班次",
+                  "name": "shift"
+                },
+                {
+                  "displayName": "报工时间",
+                  "name": "reportTime"
+                }
+              ]
+            }
+          },
+          {
+            "header": "领料记录",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "materialIssueList",
+              "columns": [
+                {
+                  "displayName": "工单",
+                  "name": "workOrder"
+                },
+                {
+                  "displayName": "物料",
+                  "name": "material"
+                },
+                {
+                  "displayName": "批次号",
+                  "name": "batchNo"
+                },
+                {
+                  "displayName": "领用数量",
+                  "name": "issueQuantity"
+                },
+                {
+                  "displayName": "领料时间",
+                  "name": "issueTime"
+                }
+              ]
+            }
+          },
+          {
+            "header": "检验记录",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "inspectionRecordList",
+              "columns": [
+                {
+                  "displayName": "工单工序任务",
+                  "name": "workOrderStep"
+                },
+                {
+                  "displayName": "检验项",
+                  "name": "inspectionItem"
+                },
+                {
+                  "displayName": "结果",
+                  "name": "result"
+                },
+                {
+                  "displayName": "抽样数量",
+                  "name": "sampleQuantity"
+                },
+                {
+                  "displayName": "检验时间",
+                  "name": "inspectionTime"
+                }
+              ]
+            }
+          },
+          {
+            "header": "防水测试",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "waterproofTestList",
+              "columns": [
+                {
+                  "displayName": "工单工序任务",
+                  "name": "workOrderStep"
+                },
+                {
+                  "displayName": "测试批次",
+                  "name": "testBatchNo"
+                },
+                {
+                  "displayName": "测试数量",
+                  "name": "testQuantity"
+                },
+                {
+                  "displayName": "结果",
+                  "name": "result"
+                },
+                {
+                  "displayName": "测试时间",
+                  "name": "testTime"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

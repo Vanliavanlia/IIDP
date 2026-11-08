@@ -1,0 +1,21 @@
+{
+  "menus": {
+    "code_root_menu": {
+      "name": "code_root_menu",
+      "display_name": "编码规则管理系统",
+      "active": true,
+      "sequence": 1
+    },
+    "barcode_rule_menu": {
+      "name": "barcode_rule_menu",
+      "display_name": "编码规则",
+      "model": "barcode_rule",
+      "view": "barcode_rule_grid,barcode_rule_search,barcode_rule_form",
+      "sequence": 1,
+      "active": true,
+      "parent_ids": {
+        "@ref": "code_root_menu"
+      }
+    }
+  }
+}

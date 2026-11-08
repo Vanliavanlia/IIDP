@@ -1,0 +1,116 @@
+{
+  "views": {
+    "product_bom_grid": {
+      "mode": "primary",
+      "name": "产品物料清单-表格",
+      "model": "product_bom",
+      "type": "grid",
+      "body": {
+        "type": "grid",
+        "buttons": [
+          {
+            "name": "详情",
+            "action": "preview",
+            "auth": "read"
+          },
+          {
+            "name": "编辑",
+            "action": "edit",
+            "auth": "update"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "BOM版本",
+            "name": "version",
+            "sortable": true,
+            "width": "100px"
+          },
+          {
+            "displayName": "父产品",
+            "name": "product"
+          },
+          {
+            "displayName": "子物料",
+            "name": "material"
+          },
+          {
+            "displayName": "用量",
+            "name": "amount"
+          },
+          {
+            "displayName": "单位",
+            "name": "unit"
+          }
+        ],
+        "tbar": [
+          {
+            "name": "新增",
+            "action": "create",
+            "auth": "create"
+          },
+          {
+            "name": "删除",
+            "action": "delete",
+            "auth": "delete"
+          }
+        ]
+      }
+    },
+    "product_bom_search": {
+      "mode": "primary",
+      "name": "产品物料清单-搜索",
+      "model": "product_bom",
+      "type": "search",
+      "body": {
+        "type": "search",
+        "columns": [
+          {
+            "displayName": "BOM版本",
+            "name": "version"
+          },
+          {
+            "displayName": "父产品",
+            "name": "product"
+          },
+          {
+            "displayName": "子物料",
+            "name": "material"
+          }
+        ]
+      }
+    },
+    "product_bom_form": {
+      "mode": "primary",
+      "name": "产品物料清单-表单",
+      "model": "product_bom",
+      "type": "form",
+      "body": {
+        "type": "form",
+        "columns": [
+          {
+            "displayName": "BOM版本",
+            "name": "version"
+          },
+          {
+            "displayName": "父产品",
+            "name": "product"
+          },
+          {
+            "displayName": "子物料",
+            "name": "material"
+          },
+          {
+            "displayName": "用量",
+            "name": "amount"
+          },
+          {
+            "displayName": "单位",
+            "name": "unit"
+          }
+        ],
+        "tabs": []
+      }
+    }
+  }
+}

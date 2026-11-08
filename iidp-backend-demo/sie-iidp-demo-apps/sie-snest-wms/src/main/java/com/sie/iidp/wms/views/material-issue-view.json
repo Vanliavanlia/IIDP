@@ -1,0 +1,139 @@
+{
+  "views": {
+    "material_issue_grid": {
+      "mode": "primary",
+      "name": "领料记录-表格",
+      "model": "material_issue",
+      "type": "grid",
+      "body": {
+        "type": "grid",
+        "buttons": [
+          {
+            "name": "详情",
+            "action": "preview",
+            "auth": "read"
+          },
+          {
+            "name": "编辑",
+            "action": "edit",
+            "auth": "update"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "批次号",
+            "name": "batchNo"
+          },
+          {
+            "displayName": "工单",
+            "name": "workOrder"
+          },
+          {
+            "displayName": "工单工序任务",
+            "name": "workOrderStep"
+          },
+          {
+            "displayName": "物料",
+            "name": "material"
+          },
+          {
+            "displayName": "领用数量",
+            "name": "issueQuantity"
+          },
+          {
+            "displayName": "领料人",
+            "name": "issuer"
+          },
+          {
+            "displayName": "领料时间",
+            "name": "issueTime"
+          }
+        ],
+        "tbar": [
+          {
+            "name": "新增",
+            "action": "create",
+            "auth": "create"
+          },
+          {
+            "name": "删除",
+            "action": "delete",
+            "auth": "delete"
+          }
+        ]
+      }
+    },
+    "material_issue_search": {
+      "mode": "primary",
+      "name": "领料记录-搜索",
+      "model": "material_issue",
+      "type": "search",
+      "body": {
+        "type": "search",
+        "columns": [
+          {
+            "displayName": "批次号",
+            "name": "batchNo"
+          },
+          {
+            "displayName": "工单",
+            "name": "workOrder"
+          },
+          {
+            "displayName": "物料",
+            "name": "material"
+          },
+          {
+            "displayName": "领料人",
+            "name": "issuer"
+          },
+          {
+            "displayName": "领料时间",
+            "name": "issueTime",
+            "widget": "datetimerange"
+          }
+        ]
+      }
+    },
+    "material_issue_form": {
+      "mode": "primary",
+      "name": "领料记录-表单",
+      "model": "material_issue",
+      "type": "form",
+      "body": {
+        "type": "form",
+        "columns": [
+          {
+            "displayName": "批次号",
+            "name": "batchNo"
+          },
+          {
+            "displayName": "工单",
+            "name": "workOrder"
+          },
+          {
+            "displayName": "工单工序任务",
+            "name": "workOrderStep"
+          },
+          {
+            "displayName": "物料",
+            "name": "material"
+          },
+          {
+            "displayName": "领用数量",
+            "name": "issueQuantity"
+          },
+          {
+            "displayName": "领料人",
+            "name": "issuer"
+          },
+          {
+            "displayName": "领料时间",
+            "name": "issueTime"
+          }
+        ],
+        "tabs": []
+      }
+    }
+  }
+}

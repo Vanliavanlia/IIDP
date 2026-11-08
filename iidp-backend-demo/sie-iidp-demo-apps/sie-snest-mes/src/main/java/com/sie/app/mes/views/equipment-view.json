@@ -1,0 +1,167 @@
+{
+  "views": {
+    "equipment_grid": {
+      "mode": "primary",
+      "name": "设备-表格",
+      "model": "equipment",
+      "type": "grid",
+      "body": {
+        "type": "grid",
+        "buttons": [
+          {
+            "name": "详情",
+            "action": "preview",
+            "auth": "read"
+          },
+          {
+            "name": "编辑",
+            "action": "edit",
+            "auth": "update"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "名称",
+            "name": "name"
+          },
+          {
+            "displayName": "设备编码",
+            "name": "code",
+            "sortable": true,
+            "width": "120px"
+          },
+          {
+            "displayName": "设备类型",
+            "name": "equipmentType"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          },
+          {
+            "displayName": "位置",
+            "name": "location"
+          }
+        ],
+        "tbar": [
+          {
+            "name": "新增",
+            "action": "create",
+            "auth": "create"
+          },
+          {
+            "name": "删除",
+            "action": "delete",
+            "auth": "delete"
+          }
+        ]
+      }
+    },
+    "equipment_search": {
+      "mode": "primary",
+      "name": "设备-搜索",
+      "model": "equipment",
+      "type": "search",
+      "body": {
+        "type": "search",
+        "columns": [
+          {
+            "displayName": "名称",
+            "name": "name"
+          },
+          {
+            "displayName": "设备编码",
+            "name": "code"
+          },
+          {
+            "displayName": "设备类型",
+            "name": "equipmentType"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ]
+      }
+    },
+    "equipment_form": {
+      "mode": "primary",
+      "name": "设备-表单",
+      "model": "equipment",
+      "type": "form",
+      "body": {
+        "type": "form",
+        "columns": [
+          {
+            "displayName": "设备编码",
+            "name": "code"
+          },
+          {
+            "displayName": "名称",
+            "name": "name",
+            "required": true
+          },
+          {
+            "displayName": "设备类型",
+            "name": "equipmentType"
+          },
+          {
+            "displayName": "位置",
+            "name": "location"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ],
+        "tabs": [
+          {
+            "header": "工单工序任务",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "workOrderStepList",
+              "columns": [
+                {
+                  "displayName": "工序序号",
+                  "name": "sequence"
+                },
+                {
+                  "displayName": "所属工单",
+                  "name": "workOrder"
+                },
+                {
+                  "displayName": "工序",
+                  "name": "processStep"
+                },
+                {
+                  "displayName": "计划数量",
+                  "name": "plannedQuantity"
+                },
+                {
+                  "displayName": "完成数量",
+                  "name": "completedQuantity"
+                },
+                {
+                  "displayName": "状态",
+                  "name": "status"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

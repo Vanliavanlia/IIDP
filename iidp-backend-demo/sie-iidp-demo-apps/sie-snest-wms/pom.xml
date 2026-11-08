@@ -11,13 +11,13 @@
 
     <groupId>com.sie.iidp.wms</groupId>
     <artifactId>sie-snest-wms</artifactId>
-    <description>仓储管理WMS-APP</description>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
 
     <build>
         <resources>
@@ -37,5 +37,4 @@
             </resource>
         </resources>
     </build>
-
 </project>

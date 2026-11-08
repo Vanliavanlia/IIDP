@@ -17,9 +17,11 @@
       "sie-iidp-iam-v3.0.1-HOTFIX.001.jar",
       "sie-iidp-dev-center-v3.0.0-RELEASE.jar",
       "sie-iidp-i18n-v3.0.0-RELEASE.jar",
+      "sie-snest-code-1.0-SNAPSHOT.jar",
       "sie-snest-mes-1.0-SNAPSHOT.jar",
+      "sie-snest-cms-1.0-SNAPSHOT.jar",
       "sie-snest-wms-1.0-SNAPSHOT.jar",
-      "sie-snest-bin-1.0-SNAPSHOT.jar"
+      "sie-snest-qms-1.0-SNAPSHOT.jar"
     ],
     "SDK-OUT": [],
     "API": [],

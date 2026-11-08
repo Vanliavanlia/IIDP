@@ -1,0 +1,140 @@
+{
+  "views": {
+    "production_report_grid": {
+      "mode": "primary",
+      "name": "报工记录-表格",
+      "model": "production_report",
+      "type": "grid",
+      "body": {
+        "type": "grid",
+        "buttons": [
+          {
+            "name": "详情",
+            "action": "preview",
+            "auth": "read"
+          },
+          {
+            "name": "编辑",
+            "action": "edit",
+            "auth": "update"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "报工时间",
+            "name": "reportTime",
+            "sortable": true
+          },
+          {
+            "displayName": "工单工序任务",
+            "name": "workOrderStep"
+          },
+          {
+            "displayName": "报工数量",
+            "name": "reportQuantity"
+          },
+          {
+            "displayName": "合格数量",
+            "name": "qualifiedQuantity"
+          },
+          {
+            "displayName": "不良数量",
+            "name": "defectQuantity"
+          },
+          {
+            "displayName": "操作员",
+            "name": "operator"
+          },
+          {
+            "displayName": "班次",
+            "name": "shift"
+          }
+        ],
+        "tbar": [
+          {
+            "name": "新增",
+            "action": "create",
+            "auth": "create"
+          },
+          {
+            "name": "删除",
+            "action": "delete",
+            "auth": "delete"
+          }
+        ]
+      }
+    },
+    "production_report_search": {
+      "mode": "primary",
+      "name": "报工记录-搜索",
+      "model": "production_report",
+      "type": "search",
+      "body": {
+        "type": "search",
+        "columns": [
+          {
+            "displayName": "报工时间",
+            "name": "reportTime",
+            "widget": "datetimerange"
+          },
+          {
+            "displayName": "工单工序任务",
+            "name": "workOrderStep"
+          },
+          {
+            "displayName": "操作员",
+            "name": "operator"
+          },
+          {
+            "displayName": "班次",
+            "name": "shift"
+          }
+        ]
+      }
+    },
+    "production_report_form": {
+      "mode": "primary",
+      "name": "报工记录-表单",
+      "model": "production_report",
+      "type": "form",
+      "body": {
+        "type": "form",
+        "columns": [
+          {
+            "displayName": "工单工序任务",
+            "name": "workOrderStep"
+          },
+          {
+            "displayName": "报工数量",
+            "name": "reportQuantity"
+          },
+          {
+            "displayName": "合格数量",
+            "name": "qualifiedQuantity"
+          },
+          {
+            "displayName": "不良数量",
+            "name": "defectQuantity"
+          },
+          {
+            "displayName": "操作员",
+            "name": "operator"
+          },
+          {
+            "displayName": "班次",
+            "name": "shift"
+          },
+          {
+            "displayName": "报工时间",
+            "name": "reportTime"
+          },
+          {
+            "displayName": "备注",
+            "name": "remark"
+          }
+        ],
+        "tabs": []
+      }
+    }
+  }
+}

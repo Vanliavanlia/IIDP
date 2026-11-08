@@ -1,0 +1,24 @@
+{
+  "name": "code",
+  "displayName": "编码规则-APP",
+  "author": "gh",
+  "company": "sie",
+  "category": "CODE",
+  "product": "CODE",
+  "description": "统一编码规则-APP",
+  "summary": "编码规则",
+  "type": "SDK",
+  "tag": "master",
+  "version": "0.0.1",
+  "resolved": "com.sie.app.code",
+  "dependencies": [],
+  "application": true,
+  "icon": null,
+  "license": "LGPL 3.0",
+  "view": [
+    "barcode-rule-view.json"
+  ],
+  "data": [
+    "data/barcode_rule.json"
+  ]
+}

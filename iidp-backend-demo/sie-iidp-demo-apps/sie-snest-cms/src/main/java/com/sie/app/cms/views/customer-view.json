@@ -1,0 +1,204 @@
+{
+  "views": {
+    "customer_grid": {
+      "mode": "primary",
+      "name": "客户-表格",
+      "model": "customer",
+      "type": "grid",
+      "body": {
+        "type": "grid",
+        "buttons": [
+          {
+            "name": "详情",
+            "action": "preview",
+            "auth": "read"
+          },
+          {
+            "name": "编辑",
+            "action": "edit",
+            "auth": "update"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "名称",
+            "name": "name"
+          },
+          {
+            "displayName": "客户编码",
+            "name": "code",
+            "sortable": true,
+            "width": "120px"
+          },
+          {
+            "displayName": "联系人",
+            "name": "contact"
+          },
+          {
+            "displayName": "电话",
+            "name": "phone"
+          },
+          {
+            "displayName": "地址",
+            "name": "address"
+          }
+        ],
+        "tbar": [
+          {
+            "name": "新增",
+            "action": "create",
+            "auth": "create"
+          },
+          {
+            "name": "删除",
+            "action": "delete",
+            "auth": "delete"
+          }
+        ]
+      }
+    },
+    "customer_search": {
+      "mode": "primary",
+      "name": "客户-搜索",
+      "model": "customer",
+      "type": "search",
+      "body": {
+        "type": "search",
+        "columns": [
+          {
+            "displayName": "名称",
+            "name": "name"
+          },
+          {
+            "displayName": "客户编码",
+            "name": "code"
+          },
+          {
+            "displayName": "联系人",
+            "name": "contact"
+          },
+          {
+            "displayName": "电话",
+            "name": "phone"
+          }
+        ]
+      }
+    },
+    "customer_form": {
+      "mode": "primary",
+      "name": "客户-表单",
+      "model": "customer",
+      "type": "form",
+      "body": {
+        "type": "form",
+        "columns": [
+          {
+            "displayName": "客户编码",
+            "name": "code"
+          },
+          {
+            "displayName": "名称",
+            "name": "name",
+            "required": true
+          },
+          {
+            "displayName": "联系人",
+            "name": "contact"
+          },
+          {
+            "displayName": "电话",
+            "name": "phone"
+          },
+          {
+            "displayName": "地址",
+            "name": "address"
+          }
+        ],
+        "tabs": [
+          {
+            "header": "销售订单",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "salesOrderList",
+              "columns": [
+                {
+                  "displayName": "订单号",
+                  "name": "orderNo"
+                },
+                {
+                  "displayName": "状态",
+                  "name": "status"
+                },
+                {
+                  "displayName": "下单日期",
+                  "name": "orderDate"
+                },
+                {
+                  "displayName": "交期",
+                  "name": "deliveryDate"
+                },
+                {
+                  "displayName": "总金额",
+                  "name": "totalAmount"
+                }
+              ]
+            }
+          },
+          {
+            "header": "LOGO规格",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "logoSpecList",
+              "columns": [
+                {
+                  "displayName": "描述",
+                  "name": "description"
+                },
+                {
+                  "displayName": "所属订单行",
+                  "name": "salesOrderLine"
+                },
+                {
+                  "displayName": "位置",
+                  "name": "position"
+                },
+                {
+                  "displayName": "工艺方式",
+                  "name": "processMethod"
+                },
+                {
+                  "displayName": "LOGO颜色",
+                  "name": "logoColor"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

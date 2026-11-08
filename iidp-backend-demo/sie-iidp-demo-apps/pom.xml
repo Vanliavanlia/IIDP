@@ -12,9 +12,11 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>sie-snest-code</module>
         <module>sie-snest-mes</module>
+        <module>sie-snest-cms</module>
         <module>sie-snest-wms</module>
-        <module>sie-snest-bin</module>
+        <module>sie-snest-qms</module>
     </modules>
 
     <dependencies>

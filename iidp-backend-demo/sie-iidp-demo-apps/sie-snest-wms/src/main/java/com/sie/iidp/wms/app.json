@@ -1,0 +1,26 @@
+{
+  "name": "sie-snest-wms",
+  "displayName": "WMS-APP",
+  "author": "gh",
+  "company": "sie",
+  "category": "WMS",
+  "product": "WMS",
+  "description": "WMS-APP",
+  "summary": "WMS",
+  "type": "SDK",
+  "tag": "master",
+  "version": "0.0.1",
+  "resolved": "com.sie.iidp.wms",
+  "dependencies": [],
+  "application": true,
+  "icon": null,
+  "license": "LGPL 3.0",
+  "view": [
+    "device-view.json",
+    "material-view.json",
+    "inventory-view.json",
+    "material-issue-view.json"
+  ],
+  "data": [
+  ]
+}

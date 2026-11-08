@@ -1,0 +1,176 @@
+{
+  "views": {
+    "sales_order_grid": {
+      "mode": "primary",
+      "name": "销售订单-表格",
+      "model": "sales_order",
+      "type": "grid",
+      "body": {
+        "type": "grid",
+        "buttons": [
+          {
+            "name": "详情",
+            "action": "preview",
+            "auth": "read"
+          },
+          {
+            "name": "编辑",
+            "action": "edit",
+            "auth": "update"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "订单号",
+            "name": "orderNo",
+            "sortable": true,
+            "width": "140px"
+          },
+          {
+            "displayName": "客户",
+            "name": "customer"
+          },
+          {
+            "displayName": "下单日期",
+            "name": "orderDate"
+          },
+          {
+            "displayName": "交期",
+            "name": "deliveryDate"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          },
+          {
+            "displayName": "总金额",
+            "name": "totalAmount"
+          }
+        ],
+        "tbar": [
+          {
+            "name": "新增",
+            "action": "create",
+            "auth": "create"
+          },
+          {
+            "name": "删除",
+            "action": "delete",
+            "auth": "delete"
+          }
+        ]
+      }
+    },
+    "sales_order_search": {
+      "mode": "primary",
+      "name": "销售订单-搜索",
+      "model": "sales_order",
+      "type": "search",
+      "body": {
+        "type": "search",
+        "columns": [
+          {
+            "displayName": "订单号",
+            "name": "orderNo"
+          },
+          {
+            "displayName": "客户",
+            "name": "customer"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          },
+          {
+            "displayName": "下单日期",
+            "name": "orderDate",
+            "widget": "daterange"
+          },
+          {
+            "displayName": "交期",
+            "name": "deliveryDate",
+            "widget": "daterange"
+          }
+        ]
+      }
+    },
+    "sales_order_form": {
+      "mode": "primary",
+      "name": "销售订单-表单",
+      "model": "sales_order",
+      "type": "form",
+      "body": {
+        "type": "form",
+        "columns": [
+          {
+            "displayName": "订单号",
+            "name": "orderNo"
+          },
+          {
+            "displayName": "客户",
+            "name": "customer"
+          },
+          {
+            "displayName": "下单日期",
+            "name": "orderDate"
+          },
+          {
+            "displayName": "交期",
+            "name": "deliveryDate"
+          },
+          {
+            "displayName": "总金额",
+            "name": "totalAmount"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ],
+        "tabs": [
+          {
+            "header": "订单行",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "salesOrderLineList",
+              "columns": [
+                {
+                  "displayName": "产品",
+                  "name": "product"
+                },
+                {
+                  "displayName": "数量",
+                  "name": "quantity"
+                },
+                {
+                  "displayName": "面漆颜色",
+                  "name": "topcoatColor"
+                },
+                {
+                  "displayName": "是否需要LOGO",
+                  "name": "needLogo"
+                },
+                {
+                  "displayName": "状态",
+                  "name": "status"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

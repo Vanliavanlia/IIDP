@@ -1,0 +1,403 @@
+{
+  "views": {
+    "work_order_step_grid": {
+      "mode": "primary",
+      "name": "工单工序任务-表格",
+      "model": "work_order_step",
+      "type": "grid",
+      "body": {
+        "type": "grid",
+        "buttons": [
+          {
+            "name": "详情",
+            "action": "preview",
+            "auth": "read"
+          },
+          {
+            "name": "编辑",
+            "action": "edit",
+            "auth": "update"
+          }
+        ],
+        "columns": [
+          {
+            "displayName": "工序序号",
+            "name": "sequence",
+            "sortable": true,
+            "width": "100px"
+          },
+          {
+            "displayName": "所属工单",
+            "name": "workOrder"
+          },
+          {
+            "displayName": "工序",
+            "name": "processStep"
+          },
+          {
+            "displayName": "计划数量",
+            "name": "plannedQuantity"
+          },
+          {
+            "displayName": "完成数量",
+            "name": "completedQuantity"
+          },
+          {
+            "displayName": "设备",
+            "name": "equipment"
+          },
+          {
+            "displayName": "班组",
+            "name": "team"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ],
+        "tbar": [
+          {
+            "name": "新增",
+            "action": "create",
+            "auth": "create"
+          },
+          {
+            "name": "删除",
+            "action": "delete",
+            "auth": "delete"
+          }
+        ]
+      }
+    },
+    "work_order_step_search": {
+      "mode": "primary",
+      "name": "工单工序任务-搜索",
+      "model": "work_order_step",
+      "type": "search",
+      "body": {
+        "type": "search",
+        "columns": [
+          {
+            "displayName": "工序序号",
+            "name": "sequence"
+          },
+          {
+            "displayName": "所属工单",
+            "name": "workOrder"
+          },
+          {
+            "displayName": "工序",
+            "name": "processStep"
+          },
+          {
+            "displayName": "班组",
+            "name": "team"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          },
+          {
+            "displayName": "计划开始时间",
+            "name": "plannedStartTime",
+            "widget": "datetimerange"
+          }
+        ]
+      }
+    },
+    "work_order_step_form": {
+      "mode": "primary",
+      "name": "工单工序任务-表单",
+      "model": "work_order_step",
+      "type": "form",
+      "body": {
+        "type": "form",
+        "columns": [
+          {
+            "displayName": "工序序号",
+            "name": "sequence"
+          },
+          {
+            "displayName": "所属工单",
+            "name": "workOrder"
+          },
+          {
+            "displayName": "工序",
+            "name": "processStep"
+          },
+          {
+            "displayName": "面漆颜色",
+            "name": "color"
+          },
+          {
+            "displayName": "LOGO规格",
+            "name": "logoSpec"
+          },
+          {
+            "displayName": "计划数量",
+            "name": "plannedQuantity"
+          },
+          {
+            "displayName": "完成数量",
+            "name": "completedQuantity"
+          },
+          {
+            "displayName": "合格数量",
+            "name": "qualifiedQuantity"
+          },
+          {
+            "displayName": "不良数量",
+            "name": "defectQuantity"
+          },
+          {
+            "displayName": "设备",
+            "name": "equipment"
+          },
+          {
+            "displayName": "班组",
+            "name": "team"
+          },
+          {
+            "displayName": "计划开始时间",
+            "name": "plannedStartTime"
+          },
+          {
+            "displayName": "计划结束时间",
+            "name": "plannedEndTime"
+          },
+          {
+            "displayName": "实际开始时间",
+            "name": "actualStartTime"
+          },
+          {
+            "displayName": "实际结束时间",
+            "name": "actualEndTime"
+          },
+          {
+            "displayName": "状态",
+            "name": "status"
+          }
+        ],
+        "tabs": [
+          {
+            "header": "报工记录",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "productionReportList",
+              "columns": [
+                {
+                  "displayName": "报工数量",
+                  "name": "reportQuantity"
+                },
+                {
+                  "displayName": "合格数量",
+                  "name": "qualifiedQuantity"
+                },
+                {
+                  "displayName": "不良数量",
+                  "name": "defectQuantity"
+                },
+                {
+                  "displayName": "操作员",
+                  "name": "operator"
+                },
+                {
+                  "displayName": "班次",
+                  "name": "shift"
+                },
+                {
+                  "displayName": "报工时间",
+                  "name": "reportTime"
+                }
+              ]
+            }
+          },
+          {
+            "header": "检验记录",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "inspectionRecordList",
+              "columns": [
+                {
+                  "displayName": "检验项",
+                  "name": "inspectionItem"
+                },
+                {
+                  "displayName": "结果",
+                  "name": "result"
+                },
+                {
+                  "displayName": "抽样数量",
+                  "name": "sampleQuantity"
+                },
+                {
+                  "displayName": "不良数量",
+                  "name": "defectQuantity"
+                },
+                {
+                  "displayName": "检验员",
+                  "name": "inspector"
+                },
+                {
+                  "displayName": "检验时间",
+                  "name": "inspectionTime"
+                }
+              ]
+            }
+          },
+          {
+            "header": "防水测试",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "waterproofTestList",
+              "columns": [
+                {
+                  "displayName": "测试批次",
+                  "name": "testBatchNo"
+                },
+                {
+                  "displayName": "测试数量",
+                  "name": "testQuantity"
+                },
+                {
+                  "displayName": "结果",
+                  "name": "result"
+                },
+                {
+                  "displayName": "渗漏数量",
+                  "name": "leakageQuantity"
+                },
+                {
+                  "displayName": "测试员",
+                  "name": "tester"
+                },
+                {
+                  "displayName": "测试时间",
+                  "name": "testTime"
+                }
+              ]
+            }
+          },
+          {
+            "header": "不良记录",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "defectRecordList",
+              "columns": [
+                {
+                  "displayName": "不良类型",
+                  "name": "defectType"
+                },
+                {
+                  "displayName": "不良数量",
+                  "name": "defectQuantity"
+                },
+                {
+                  "displayName": "处理方式",
+                  "name": "handlingMethod"
+                },
+                {
+                  "displayName": "检验记录",
+                  "name": "inspectionRecord"
+                },
+                {
+                  "displayName": "描述",
+                  "name": "description"
+                }
+              ]
+            }
+          },
+          {
+            "header": "领料记录",
+            "tbar": [
+              {
+                "name": "新增",
+                "action": "createEr",
+                "auth": "create"
+              },
+              {
+                "name": "删除",
+                "action": "deleteEr",
+                "auth": "delete"
+              }
+            ],
+            "body": {
+              "type": "grid,form",
+              "field": "materialIssueList",
+              "columns": [
+                {
+                  "displayName": "物料",
+                  "name": "material"
+                },
+                {
+                  "displayName": "批次号",
+                  "name": "batchNo"
+                },
+                {
+                  "displayName": "领用数量",
+                  "name": "issueQuantity"
+                },
+                {
+                  "displayName": "领料时间",
+                  "name": "issueTime"
+                },
+                {
+                  "displayName": "领料人",
+                  "name": "issuer"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

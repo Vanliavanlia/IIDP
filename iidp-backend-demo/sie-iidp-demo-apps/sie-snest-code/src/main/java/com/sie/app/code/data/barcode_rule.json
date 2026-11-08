@@ -1,0 +1,56 @@
+{
+  "data": {
+    "barcode_rule_order": {
+      "model": "barcode_rule",
+      "properties": { "code": "order", "prefix": "ORD", "length": 6 }
+    },
+    "barcode_rule_product": {
+      "model": "barcode_rule",
+      "properties": { "code": "product", "prefix": "P", "length": 6 }
+    },
+    "barcode_rule_process": {
+      "model": "barcode_rule",
+      "properties": { "code": "process", "prefix": "PC", "length": 6 }
+    },
+    "barcode_rule_process_step": {
+      "model": "barcode_rule",
+      "properties": { "code": "process_step", "prefix": "PS", "length": 6 }
+    },
+    "barcode_rule_work_order": {
+      "model": "barcode_rule",
+      "properties": { "code": "work_order", "prefix": "WO", "length": 6 }
+    },
+    "barcode_rule_equipment": {
+      "model": "barcode_rule",
+      "properties": { "code": "equipment", "prefix": "EQ", "length": 6 }
+    },
+    "barcode_rule_employee": {
+      "model": "barcode_rule",
+      "properties": { "code": "employee", "prefix": "EMP", "length": 6 }
+    },
+    "barcode_rule_team": {
+      "model": "barcode_rule",
+      "properties": { "code": "team", "prefix": "TM", "length": 6 }
+    },
+    "barcode_rule_shift": {
+      "model": "barcode_rule",
+      "properties": { "code": "shift", "prefix": "SF", "length": 6 }
+    },
+    "barcode_rule_customer": {
+      "model": "barcode_rule",
+      "properties": { "code": "customer", "prefix": "C", "length": 6 }
+    },
+    "barcode_rule_sales_order": {
+      "model": "barcode_rule",
+      "properties": { "code": "sales_order", "prefix": "SO", "length": 6 }
+    },
+    "barcode_rule_material": {
+      "model": "barcode_rule",
+      "properties": { "code": "material", "prefix": "M", "length": 6 }
+    },
+    "barcode_rule_device": {
+      "model": "barcode_rule",
+      "properties": { "code": "device", "prefix": "DV", "length": 6 }
+    }
+  }
+}
