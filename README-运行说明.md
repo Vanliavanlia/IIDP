@@ -1078,3 +1078,80 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\grant-day4-apps.ps
 | 角色授权 | 无 | 增加 `scripts/grant-day4-apps.ps1` | 原样导入后两个平台角色看不到业务 APP，脚本可复现地补齐 |
 | 旧业务 APP | 无 | 备份到 `_extract\old-business-apps\` | 保留可回溯，但不进 git |
 | 库 | 未提 | 先 mysqldump 备份再清库 | 换架构会重建全部表，避免丢数据 |
+
+## 18. 第五天：普通用户的组织 / 角色 / 授权 + 代码里读取当前用户
+
+课件第 5 天的主体是两件事：**在平台里把组织、用户、角色、授权走通**，以及**在代码里拿到当前登录用户和他的角色**。下面按这两条给出本工程的等价操作（全部可用 RPC 复现，不用点页面）。
+
+### 18.1 平台侧：五步把人配起来
+
+| 步骤 | 服务调用（经 Nginx 30666） | 关键参数 | 本工程实测结果 |
+|---|---|---|---|
+| ① 创建组织 | `model=rbac_organization&service=create` | `name=生产部, code=ORG-SC, tenantId=rbac_tenant_root, status=1, type=0` | id `06cn7ugnheo3u` |
+| ② 新增用户 | `model=rbac_user&service=create` | `login=zhangsan, name=张三, password=Zhang_2026, tenantId=rbac_tenant_root, status=0` | id `06cn7ureynlp1` |
+| ③ 新建角色 | `model=rbac_role&service=create` | `name=车间主管, code=rbac_role_workshop, roleType=normal, roleDelete=1, tenantId=rbac_tenant_root` | id `06cn7v3wdvy8z` |
+| ④ 角色授权功能权限 | `model=rbac_role_auth&service=create` | 每个业务 APP 一行：`role=06cn7v3wdvy8z, appName=mes/cms/qms/code/sie-snest-wms, appTag=master, appAll=1, tenantId=rbac_tenant_root` | 5 行，首行 `06cn7vido74cz` |
+| ⑤ 用户绑定角色 | 页面上是「用户管理 → 编辑 → 角色」勾选；RPC 里 `rbac_user.update` 对关系字段的入参格式与普通属性不同，本次直接写关联表 | `INSERT INTO rbac_role_user (user_ids, role_ids) VALUES ('06cn7ureynlp1','06cn7v3wdvy8z')` | 绑定成功 |
+
+> 说明：`rbac_role_user` 是**关联表**，不是模型，不能像业务模型那样 `service=create`（会报 `模型[rbac_role_user]不存在`）。页面上的"绑定角色"最终也是往这张表写一对 `user_ids` / `role_ids`。
+
+### 18.2 代码侧：`whoAmI` 服务
+
+在 `iidp-backend-demo\sie-iidp-demo-apps\sie-snest-mes\src\main\java\com\sie\app\mes\model\Employee.java` 中新增：
+
+```java
+@MethodService(name = "whoAmI", auth = "whoAmI", description = "获取当前登录用户及其角色")
+public Map<String, Object> whoAmI() {
+    String userId = getMeta().getUserId();
+
+    List<Map<String, Object>> users = getMeta().get("rbac_user")
+            .search(Filter.equal("id", userId), Collections.singletonList("*"), 0, 0, null);
+
+    List<Map<String, Object>> roles = getMeta().get("rbac_role")
+            .search(Filter.equal("user_ids", userId), Collections.singletonList("*"), 0, 0, null);
+
+    Map<String, Object> result = new LinkedHashMap<>();
+    result.put("userId", userId);
+    if (users != null && !users.isEmpty()) {
+        result.put("login", users.get(0).get("login"));
+        result.put("name", users.get(0).get("name"));
+        result.put("tenantId", users.get(0).get("tenantId"));
+    }
+    List<Map<String, Object>> roleList = new ArrayList<>();
+    if (roles != null) {
+        for (Map<String, Object> r : roles) {
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("id", r.get("id"));
+            item.put("code", r.get("code"));
+            item.put("name", r.get("name"));
+            item.put("isAdmin", r.get("is_admin"));
+            roleList.add(item);
+        }
+    }
+    result.put("roles", roleList);
+    result.put("roleCount", roleList.size());
+    result.put("isAdmin", !roleList.isEmpty() && Boolean.TRUE.equals(roleList.get(0).get("isAdmin")));
+    return result;
+}
+```
+
+要点：
+- `getMeta().getUserId()` 取当前登录用户 id（`rbac_user.id`）。
+- 用户的角色挂在 `rbac_role.user_ids` 上，所以用 `Filter.equal("user_ids", userId)` 查 `rbac_role`；**不要**去查 `rbac_role_user`（它不是模型）。
+- 过滤器一律用 `Filter.equal(...)` 这类 Java API 构造；写成 JSON 字符串会报 `Invalid leaf =`（引擎的波兰表达式叶节点语法与常见写法不同）。
+
+### 18.3 实测（第五天）
+
+| 调用 | 结果 |
+|---|---|
+| `zhangsan` 登录（password 传 `MD5("Zhang_2026")` = `7a3fed1ac8bd8d139dde14d97caf860f`） | 成功，`roles=[{code: rbac_role_workshop, name: 车间主管}]`，token 480 位 |
+| `mes.employee.whoAmI`（zhangsan） | `{"userId":"06cn7ureynlp1","login":"zhangsan","name":"张三","roles":[{"id":"06cn7v3wdvy8z","code":"rbac_role_workshop","name":"车间主管"}],"roleCount":1}` |
+| `ui_menu.loadMenu`（zhangsan） | 44 条，含 CMS / CODE / MES / QMS / WMS 五个业务 APP 的菜单 |
+| `mes.employee.whoAmI`（implementer） | `{"userId":"rbac_user_implementer","login":"implementer","name":"平台租户管理员","roles":[{"code":"rbac_role_implementer_admin",...}],"roleCount":1}` |
+
+### 18.4 本节踩到的坑
+
+1. **`rbac_role_user` 不是模型**：`getMeta().get("rbac_role_user")` 或 `model=rbac_role_user` 都会报"模型不存在"，它只是 `user_ids`/`role_ids` 关联表。
+2. **JSON 字符串过滤器不能用**：`{"filter":["=","user_ids","..."]}` → `Invalid leaf =`。在 Java 里用 `Filter.equal/filter.and` 构造；RPC 里干脆省略 `filter`。
+3. **`rbac_user.update` 写关系字段**：传 `{"values":{...}}` 报 `String cannot be cast to List`，传 `{"values":[{...}]}` 报 `argument type mismatch`，换 `value/data/map/record` 都是 504。要绑角色：页面用「编辑 → 角色」，脚本就写 `rbac_role_user` 关联表。
+4. **密码一律传 MD5**：库里 `admin` 存明文、其他用户存 `sha256(md5(明文)+salt)`，但登录接口收的是 `MD5(明文)`。
