@@ -267,3 +267,41 @@ List<Map<String, Object>> users = getMeta().get("rbac_user")
 | lisi | Li_2026 | 大学城驿站（ST-002） |
 
 两个账号都绑定了 `rbac_role_implementer_admin`（否则登录会报「请联系系统管理员进行角色绑定」）。
+
+## 11. 交付物与文档构建
+
+### 11.1 交付物清单
+
+| 文件 | 说明 |
+| --- | --- |
+| 交付文档/快递驿站管理系统-项目开发文档.docx | 31 页，9 章 + 附录，29 表 5 图，目录页码已写死 |
+| 交付文档/快递驿站管理系统-项目开发过程文档.docx | 23 页，16 条问题清单 + 5 个典型案例（含 3 次交流记录占位） |
+| 交付文档/快递驿站管理系统-汇报PPT.pptx | 16 页，16:9，含 5 张 UML 图与 6 张真实界面截图 |
+
+### 11.2 目录为什么不用「更新域」
+
+文档里的目录是**静态段落**：每条 = 标题 + 点线 + 页码，不依赖 Word 的 TOC 域，打开即可见，不会提示更新。
+
+页码来自两遍构建：先生成 docx → 用 LibreOffice 转 PDF → 用 docs/pdftext.py 逐页抽文字、定位每个标题实际落在第几页 → 回填页码重建。因为两遍的目录行数一致，页码不会漂移（构建脚本会自校验，漂移就再跑一遍）。
+
+`powershell
+# 重新生成两份文档（需要本机 LibreOffice Kit，约 1 分钟）
+& <python> D:\Code\intermediate_software\docs\build_docs.py
+`
+
+### 11.3 汇报 PPT
+
+`powershell
+& <python> D:\Code\intermediate_software\docs\build_ppt.py      # 生成 PPT
+# 逐页渲染复核（LibreOffice Kit）
+& <node> <cli> render --input ...\汇报PPT.pptx --output-dir <新目录> --pages 1-16
+`
+
+界面截图脚本 
+untime/shot_ui4.ps1：用 CDP 驱动无头 Chrome 登录 zhangsan 后依次抓取包裹列表、货架、驿站、操作记录、入库表单（需要 danger-full-access，因为无头 Chrome 要建命名管道）。
+
+### 11.4 仍需人工补的地方
+
+1. 开发文档封面与第 8 章的组号、成员姓名、学号、指导教师（现为「＿＿＿」占位）。
+2. 过程文档第 3 章 5 个典型案例各 3 张交流截图（附录 A 已留占位框，共 15 张）。
+3. 若成员信息变了，改 docs/build_dev_doc.py 里的封面 meta 与分工表，再跑一次 uild_docs.py 即可（页码会自动重算）。

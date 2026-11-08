@@ -50,3 +50,4 @@ desktop.ini
 
 __pycache__/
 *.pyc
+/docs/.pages/

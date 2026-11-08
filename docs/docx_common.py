@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """两个课程文档共用的排版工具：中文字体、标题层级、表格、图注、代码块、页码。"""
+import json
 import os
 from docx import Document
 from docx.shared import Pt, Cm, RGBColor
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING, WD_TAB_ALIGNMENT, WD_TAB_LEADER
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.section import WD_SECTION
 from docx.oxml.ns import qn
@@ -84,8 +85,9 @@ def add_field(paragraph, instr):
 
 
 class Doc(object):
-    def __init__(self):
+    def __init__(self, page_map=None):
         self.doc = Document()
+        self.page_map = dict(page_map or {})
         sec = self.doc.sections[0]
         sec.page_width = Cm(21.0)
         sec.page_height = Cm(29.7)
@@ -186,33 +188,50 @@ class Doc(object):
         self.doc.add_page_break()
 
     def toc(self, entries):
+        """写死目录：标题 + 点线 + 页码（页码来自 page_map，缺省留空）。"""
         p = self.doc.add_paragraph()
         p.paragraph_format.first_line_indent = Pt(0)
+        p.paragraph_format.space_after = Pt(12)
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         r = p.add_run("目　录")
         set_run_font(r, HEI, HEI, 18, bold=True, color=ACCENT)
-        self.doc.add_paragraph()
-        par = self.doc.add_paragraph()
-        par.paragraph_format.first_line_indent = Pt(0)
-        run = par.add_run()
-        b = OxmlElement("w:fldChar")
-        b.set(qn("w:fldCharType"), "begin")
-        instr = OxmlElement("w:instrText")
-        instr.set(qn("xml:space"), "preserve")
-        instr.text = ' TOC \\o "1-3" \\h \\z \\u '
-        sep = OxmlElement("w:fldChar")
-        sep.set(qn("w:fldCharType"), "separate")
-        t = OxmlElement("w:t")
-        t.text = "（目录将在打开文档时自动生成；若未生成，请按 Ctrl+A 后按 F9 更新域）"
-        end = OxmlElement("w:fldChar")
-        end.set(qn("w:fldCharType"), "end")
-        run._r.append(b)
-        run._r.append(instr)
-        run._r.append(sep)
-        run._r.append(t)
-        run._r.append(end)
-        set_run_font(run, SONG, LATIN, 10.5)
+
+        for level, text in entries:
+            par = self.doc.add_paragraph()
+            pf = par.paragraph_format
+            pf.first_line_indent = Pt(0)
+            pf.left_indent = Cm(0.0 if level == 1 else (0.75 if level == 2 else 1.5))
+            pf.space_before = Pt(6 if level == 1 else 0)
+            pf.space_after = Pt(2)
+            pf.line_spacing_rule = WD_LINE_SPACING.SINGLE
+            pf.tab_stops.add_tab_stop(Cm(15.3), WD_TAB_ALIGNMENT.RIGHT, WD_TAB_LEADER.DOTS)
+
+            r1 = par.add_run(text)
+            set_run_font(r1, HEI if level == 1 else SONG, LATIN,
+                         12 if level == 1 else 10.5, bold=(level == 1), color=ACCENT if level == 1 else None)
+            r2 = par.add_run("\t")
+            set_run_font(r2, SONG, LATIN, 10.5)
+            page = self.page_map.get(text, "")
+            r3 = par.add_run(str(page))
+            set_run_font(r3, SONG, LATIN, 10.5, bold=(level == 1))
+        self.toc_entries = list(entries)
+        _out = os.environ.get("TOC_OUT")
+        if _out:
+            with open(_out, "w", encoding="utf-8") as fh:
+                json.dump([[int(lv), tx] for lv, tx in entries], fh, ensure_ascii=False, indent=1)
         self.doc.add_page_break()
+        # 正文起始哨兵：1pt 白字，肉眼不可见，用于在 PDF 里定位正文第一页
+        if os.environ.get("NOMARK"):
+            return
+        mark = self.doc.add_paragraph()
+        mf = mark.paragraph_format
+        mf.first_line_indent = Pt(0)
+        mf.space_before = Pt(0)
+        mf.space_after = Pt(0)
+        mf.line_spacing = Pt(1)
+        mr = mark.add_run("BODYMARK")
+        set_run_font(mr, SONG, LATIN, 1)
+        mr.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
 
     def h(self, text, level=1):
         p = self.doc.add_heading(level=level)

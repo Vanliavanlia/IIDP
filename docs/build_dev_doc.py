@@ -1,13 +1,20 @@
 # -*- coding: utf-8 -*-
 """生成《项目开发文档》."""
+import json
 import os
+import sys
 from docx_common import Doc
+
+_here = os.path.dirname(os.path.abspath(__file__))
+if _here not in sys.path:
+    sys.path.insert(0, _here)
+_pm_path = os.environ.get("PAGE_MAP")
+PAGE_MAP = json.load(open(_pm_path, encoding="utf-8")) if _pm_path and os.path.exists(_pm_path) else {}
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "交付文档", "快递驿站管理系统-项目开发文档.docx")
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 
-d = Doc()
-d.update_fields_on_open()
+d = Doc(PAGE_MAP)
 
 # ============ 封面 ============
 d.cover(
