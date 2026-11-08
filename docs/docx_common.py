@@ -327,6 +327,13 @@ class Doc(object):
                 r = par.add_run(str(v))
                 set_run_font(r, SONG, LATIN, size)
 
+        for ri, row in enumerate(t.rows):
+            trPr = row._tr.get_or_add_trPr()
+            if trPr.find(qn("w:cantSplit")) is None:
+                trPr.append(OxmlElement("w:cantSplit"))
+            if ri == 0 and trPr.find(qn("w:tblHeader")) is None:
+                trPr.append(OxmlElement("w:tblHeader"))
+
         if widths:
             total = sum(widths)
             limit = 15.3
@@ -334,6 +341,7 @@ class Doc(object):
                 widths = [w * limit / total for w in widths]
             t.autofit = False
             for i, w in enumerate(widths):
+                t.columns[i].width = Cm(w)
                 for row in t.rows:
                     row.cells[i].width = Cm(w)
         self.doc.add_paragraph().paragraph_format.space_after = Pt(0)
@@ -343,6 +351,9 @@ class Doc(object):
         """灰色占位框（用于待补截图）。"""
         t = self.doc.add_table(rows=1, cols=1)
         t.style = "Table Grid"
+        trPr = t.rows[0]._tr.get_or_add_trPr()
+        if trPr.find(qn("w:cantSplit")) is None:
+            trPr.append(OxmlElement("w:cantSplit"))
         cell = t.rows[0].cells[0]
         cell.width = Cm(15.0)
         cell.text = ""

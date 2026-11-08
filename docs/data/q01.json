@@ -1,0 +1,158 @@
+{
+ "code": "Q01",
+ "title": "后端启动失败：引擎 SQL 模板目录被第三方依赖抢占",
+ "blocks": [
+  {
+   "t": "table",
+   "rows": [
+    [
+     "项目",
+     "内容"
+    ],
+    [
+     "所处阶段",
+     "环境部署"
+    ],
+    [
+     "问题状态",
+     "已解决"
+    ],
+    [
+     "现象",
+     "执行 java -jar 启动后端，日志停在「加载引擎的自定义sql开始」，随后抛出 IllegalStateException: 插件启动失败，Caused by: NullPointerException at SqlTemplateConverter.convert(SqlTemplateConverter.java:25)"
+    ],
+    [
+     "影响",
+     "后端无法启动，整个系统不可用"
+    ]
+   ]
+  },
+  {
+   "t": "h3",
+   "text": "现象与日志"
+  },
+  {
+   "t": "p",
+   "text": "启动日志中错误栈为：AppLifecycleProcess.loadConfig → SqlTemplateConverter.convert(SqlTemplateConverter.java:25)，异常为 NullPointerException。同类问题在培训方的运行日志中并不存在，说明与运行环境相关。"
+  },
+  {
+   "t": "code",
+   "text": "java.lang.IllegalStateException: 插件启动失败\n  at com.sie.snest.engine.container.AppLifecycleProcess.loadConfig(AppLifecycleProcess.java:681)\nCaused by: java.lang.NullPointerException\n  at com.sie.snest.engine.model.converters.SqlTemplateConverter.convert(SqlTemplateConverter.java:25)"
+  },
+  {
+   "t": "h3",
+   "text": "分析与排查"
+  },
+  {
+   "t": "bullet",
+   "text": "用 javap 反编译 SqlTemplateConverter，确认第 25 行是 relId 字段的 toString()，即模板对象的 relId 为 null。"
+  },
+  {
+   "t": "bullet",
+   "text": "对打磨机 SQL 模板逐一做单元验证，单独加载引擎 jar 时 48 条模板全部正常，说明真机加载到了另一份 SQL 模板。"
+  },
+  {
+   "t": "bullet",
+   "text": "用补丁版类打印实际加载的模板来源，发现 classpath 中第一个 sql 目录来自 BOOT-INF/lib/shardingsphere-...-jdbc-5.5.0.jar!/sql，其中的 H2.xml / MySQL.xml 子节点没有 id 属性，导致 relId 为 null。"
+  },
+  {
+   "t": "bullet",
+   "text": "引擎的 SqlTemplateLoader 通过 classLoader.getResource(\"sql\") 只取第一个命中的目录，而不是遍历全部。"
+  },
+  {
+   "t": "h3",
+   "text": "解决方案"
+  },
+  {
+   "t": "p",
+   "text": "把引擎自带的 4 个 SQL 模板（engine_init.xml 及达梦/Oracle/PostgreSQL 版本）从引擎 jar 中取出，放入启动模块的 src/main/resources/sql/，使 BOOT-INF/classes/sql 在 classpath 中排在所有依赖 jar 之前，引擎即加载到平台自己的模板。"
+  },
+  {
+   "t": "code",
+   "text": "sie-iidp-demo-start/src/main/resources/sql/\n├─ engine_init.xml\n├─ engine_init_dameng.xml\n├─ engine_init_oracle.xml\n└─ engine_init_postgresql.xml"
+  },
+  {
+   "t": "h3",
+   "text": "验证与结论"
+  },
+  {
+   "t": "p",
+   "text": "重新打包启动，日志出现「加载引擎的自定义sql结束」，随后自动建表 79 张并逐个安装 SDK 应用，启动成功。结论：第三方 jar 提供了同名 sql 资源目录，需要在工程内以更高优先级覆盖。"
+  },
+  {
+   "t": "h3",
+   "text": "交流记录"
+  },
+  {
+   "t": "p",
+   "text": "第 1 次交流记录"
+  },
+  {
+   "t": "table",
+   "rows": [
+    [
+     "第 1 次交流",
+     "内容"
+    ],
+    [
+     "讨论要点",
+     "开发中发现，后端一启动就崩，报插件启动失败，栈里是 SQL 模板转换空指针。开发成员提出先确认是不是数据库连不上导致模板为空。"
+    ],
+    [
+     "结论",
+     "先用最小改动验证：把数据库切到空库重试，仍然报同样的错，排除数据库因素，确定问题在 classpath 资源加载。"
+    ]
+   ]
+  },
+  {
+   "t": "p",
+   "text": "第 2 次交流记录"
+  },
+  {
+   "t": "table",
+   "rows": [
+    [
+     "第 2 次交流",
+     "内容"
+    ],
+    [
+     "讨论要点",
+     "开发成员提出用 javap 看第 25 行到底是哪个字段；另补充已经用补丁类打印了实际加载的模板路径，指向 shardingsphere 的 sql 目录。三人确认根因是资源目录抢占。"
+    ],
+    [
+     "结论",
+     "决定不改引擎 jar，改为在启动模块 resources 下放同名 sql 目录，用 classpath 顺序覆盖。"
+    ]
+   ]
+  },
+  {
+   "t": "p",
+   "text": "第 3 次交流记录"
+  },
+  {
+   "t": "table",
+   "rows": [
+    [
+     "第 3 次交流",
+     "内容"
+    ],
+    [
+     "讨论要点",
+     "复核修改后启动日志，确认 4 个模板被正确加载，建表与应用安装均正常；讨论是否需要为其它第三方 jar 做同样处理。"
+    ],
+    [
+     "结论",
+     "确认修复有效并记入问题清单；约定后续新增依赖时如遇资源冲突，统一用「工程内覆盖」的方式解决。"
+    ]
+   ]
+  },
+  {
+   "t": "table",
+   "rows": [
+    [
+     "【此处粘贴第 3 次讨论截图】"
+    ]
+   ]
+  }
+ ]
+}

@@ -106,8 +106,11 @@ def patch_numbers(docx_path, page_map):
 def main():
     workdir = os.path.join(HERE, ".pages")
     os.makedirs(workdir, exist_ok=True)
+    target = sys.argv[1] if len(sys.argv) > 1 else None
     for script, name in DOCS:
-        docx_path = os.path.join(ROOT, "交付文档", name + ".docx")
+        if target and target not in script:
+            continue
+        docx_path = os.environ.get("DOCX_OVERRIDE") or os.path.join(ROOT, "交付文档", name + ".docx")
         entries_json = os.path.join(workdir, name + ".toc.json")
         run_build(script, toc_out=entries_json)
         entries = [tuple(x) for x in json.load(open(entries_json, encoding="utf-8"))]
