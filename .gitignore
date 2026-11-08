@@ -51,3 +51,5 @@ desktop.ini
 __pycache__/
 *.pyc
 /docs/.pages/
+/docs/.tocfix/
+/runtime/backup/
